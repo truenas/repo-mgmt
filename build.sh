@@ -1,6 +1,6 @@
 #!/bin/sh
 
-. ./conf/confg.env
+. ./conf/config.env
 
 exit_err() {
 	echo "$@"
