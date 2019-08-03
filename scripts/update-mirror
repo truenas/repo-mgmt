@@ -1,0 +1,112 @@
+#!/bin/bash
+ 
+update_truenas() {
+
+	# sourcehost: choose a mirror in your proximity!
+	HOST=${TNREPO};
+ 
+	# destination directory
+	DEST=${TNMIRROR}
+ 
+	# Debian version(s) to mirror
+	DIST=${TNDIST}
+ 
+	# architecture
+	ARCH=amd64
+ 
+	# log timestamp
+	logger -t mirror[$$] updating TrueNAS mirror
+ 
+	debmirror ${DEST} \
+		-p \
+		--rsync-extra=none \
+		--nosource \
+		--host=${HOST} \
+		--method=http \
+		--root=/repositories/truenas \
+		--dist=${DIST} \
+		--section=main,contrib,non-free \
+		--i18n \
+		--arch=${ARCH} \
+		--passive --cleanup \
+		$VERBOSE
+ 
+	logger -t mirror[$$] finished updating TrueNAS mirror
+
+}
+
+update_debian() {
+	# sourcehost: choose a mirror in your proximity!
+	HOST=${DEBREPO};
+ 
+	# destination directory
+	DEST=${DEBMIRROR}
+ 
+	# Debian version(s) to mirror
+	DIST=${DEBDIST}
+ 
+	# architecture
+	ARCH=amd64
+ 
+	# log timestamp
+	logger -t mirror[$$] updating Debian mirror
+ 
+	debmirror ${DEST} \
+		-p \
+		--di-dist=${DIST} \
+		--rsync-extra=none \
+		--nosource \
+		--host=${HOST} \
+		--method=http \
+		--root=/debian \
+		--dist=${DIST} \
+		--section=main,contrib,non-free,main/debian-installer \
+		--i18n \
+		--arch=${ARCH} \
+		--passive --cleanup \
+		$VERBOSE
+	logger -t mirror[$$] finished updating Debian mirror
+}
+
+check_keyring() {
+	# Ensure all the debian keys are installed
+	gpg --list-keys --keyring trustedkeys.gpg >/dev/null 2>/dev/null
+	if [ $? -ne 0 ] ; then
+		gpg --no-default-keyring --keyring trustedkeys.gpg --import /usr/share/keyrings/debian-archive-keyring.gpg
+	fi
+
+	# Make sure TrueNAS key is installed
+	gpg --list-keys --keyring trustedkeys.gpg | grep -q ixsystems
+	if [ $? -ne 0 ] ; then
+		gpg --no-default-keyring --keyring trustedkeys.gpg --import conf/truenas.key
+	fi
+
+
+}
+
+# Ensure debmirror is installed
+which debmirror >/dev/null 2>/dev/null
+if [ $? -ne 0 ] ; then
+	echo "Missing 'debmirror' utilty, please install with 'apt install debmirror'"
+	exit 1
+fi
+
+# Ensure that debian-keyring is installed
+if [ ! -e "/usr/share/keyrings/debian-archive-keyring.gpg" ] ; then
+	echo "Missing debian-keyring, please install with 'apt install debian-keyring'"
+	exit 1
+fi
+
+case $1 in
+	debian) 
+		update_debian
+		;;
+	truenas) 
+		update_truenas
+		;;
+
+	*)
+		echo "Invalid argument $1"
+		exit 1
+		;;
+esac
