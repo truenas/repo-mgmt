@@ -63,7 +63,7 @@ case $1 in
 		update_mirror "${DEBDIST}" "${DEBAPTLYMIRROR}" "${TRUENASBUILD}" "${DEBREPO}"
 		;;
 	truenas) 
-		update_mirror "${TNDIST}" "${TNAPTLTMIRROR}" "${TRUENASBUILD}" "${TNREPO}"
+		update_mirror "${TNDIST}" "${TNAPTLYMIRROR}" "${TRUENASBUILD}" "${TNREPO}"
 		;;
 
 	*)
