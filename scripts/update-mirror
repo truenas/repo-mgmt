@@ -14,7 +14,7 @@ update_mirror() {
 	${APTLY} snapshot drop ${MIRROR}-current
 
 	# Check if we need to init the mirror
-	${APTLY} mirror list | grep -q -w ${MIRROR}
+	${APTLY} mirror list | grep -q -w "[${MIRROR}]"
 	if [ $? -ne 0 ] ; then
 		${APTLY} mirror create ${MOPTS} ${MIRROR} ${REPO} ${DIST}
 	fi
