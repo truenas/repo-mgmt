@@ -1,46 +1,28 @@
 #!/bin/bash
+
+APTLY="aptly -config \"$(pwd)/conf/aptly.conf\""
  
 update_truenas() {
 
-	# sourcehost: choose a mirror in your proximity!
-	HOST=${TNREPO};
- 
-	# destination directory
-	DEST=${TNMIRROR}
- 
-	# Debian version(s) to mirror
-	DIST=${TNDIST}
- 
 	# architecture
 	ARCH=amd64
  
+	# Check if we need to init the mirror
+	${APTLY} mirror list | grep -q -w ${TNAPTLYMIRROR}
+	if [ $? -ne 0 ] ; then
+		${APTLY} mirror create ${TNAPTLYMIRROR} ${DEBREPO} ${TNDIST}
+	fi
+
 	# log timestamp
 	logger -t mirror[$$] updating TrueNAS mirror
  
-	debmirror ${DEST} \
-		-p \
-		--rsync-extra=none \
-		--nosource \
-		--host=${HOST} \
-		--method=http \
-		--root=/repositories/truenas \
-		--dist=${DIST} \
-		--section=main,contrib,non-free \
-		--i18n \
-		--arch=${ARCH} \
-		--passive --cleanup \
-		$VERBOSE
- 
+	${APTLY} mirror update ${TNAPTLYMIRROR}
+
 	logger -t mirror[$$] finished updating TrueNAS mirror
 
 }
 
 update_debian() {
-	# sourcehost: choose a mirror in your proximity!
-	HOST=${DEBREPO};
- 
-	# destination directory
-	DEST=${DEBMIRROR}
  
 	# Debian version(s) to mirror
 	DIST=${DEBDIST}
@@ -48,46 +30,40 @@ update_debian() {
 	# architecture
 	ARCH=amd64
  
+	# Check if we need to init the mirror
+	${APTLY} mirror list | grep -q -w ${DEBAPTLYMIRROR}
+	if [ $? -ne 0 ] ; then
+		${APTLY} mirror create -with-udebs -with-sources ${DEBAPTLYMIRROR} ${DEBREPO} ${DEBDIST}
+	fi
+
 	# log timestamp
 	logger -t mirror[$$] updating Debian mirror
  
-	debmirror ${DEST} \
-		-p \
-		--di-dist=${DIST} \
-		--rsync-extra=none \
-		--nosource \
-		--host=${HOST} \
-		--method=http \
-		--root=/debian \
-		--dist=${DIST} \
-		--section=main,contrib,non-free,main/debian-installer \
-		--i18n \
-		--arch=${ARCH} \
-		--passive --cleanup \
-		$VERBOSE
+	${APTLY} mirror update ${DEPAPTLYMIRROR}
+
 	logger -t mirror[$$] finished updating Debian mirror
 }
 
 check_keyring() {
 	# Ensure all the debian keys are installed
-	gpg --list-keys --keyring trustedkeys.gpg >/dev/null 2>/dev/null
+	gpg1 --list-keys --keyring trustedkeys.gpg >/dev/null 2>/dev/null
 	if [ $? -ne 0 ] ; then
-		gpg --no-default-keyring --keyring trustedkeys.gpg --import /usr/share/keyrings/debian-archive-keyring.gpg
+		gpg1 --no-default-keyring --keyring trustedkeys.gpg --import /usr/share/keyrings/debian-archive-keyring.gpg
 	fi
 
 	# Make sure TrueNAS key is installed
-	gpg --list-keys --keyring trustedkeys.gpg | grep -q ixsystems
+	gpg1 --list-keys --keyring trustedkeys.gpg | grep -q ixsystems
 	if [ $? -ne 0 ] ; then
-		gpg --no-default-keyring --keyring trustedkeys.gpg --import conf/truenas.key
+		gpg1 --no-default-keyring --keyring trustedkeys.gpg --import conf/truenas.key
 	fi
 
 
 }
 
 # Ensure debmirror is installed
-which debmirror >/dev/null 2>/dev/null
+which aptly >/dev/null 2>/dev/null
 if [ $? -ne 0 ] ; then
-	echo "Missing 'debmirror' utilty, please install with 'apt install debmirror'"
+	echo "Missing 'aptly' utilty, please install with 'apt install aptly'"
 	exit 1
 fi
 
