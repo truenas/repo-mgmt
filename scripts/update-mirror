@@ -4,9 +4,10 @@ APTLY="aptly -config $(pwd)/conf/aptly.conf"
  
 update_truenas() {
 
-	# architecture
-	ARCH=amd64
- 
+	# Cleanup old published / snapshots
+	${APTLY} publish drop ${TNDIST} filesystem:truenas:truenas/${TRUENASBUILD}
+	${APTLY} snapshot drop ${TNAPTLYMIRROR}-current
+
 	# Check if we need to init the mirror
 	${APTLY} mirror list | grep -q -w ${TNAPTLYMIRROR}
 	if [ $? -ne 0 ] ; then
@@ -16,12 +17,11 @@ update_truenas() {
 	# Update the mirror from upstream
 	${APTLY} mirror update ${TNAPTLYMIRROR}
 
-	# Re-create the -current snapshot
-	${APTLY} snapshot drop ${TNAPTLYMIRROR}-current >/dev/null 2>/dev/null
+	# Create -current snapshot
 	${APTLY} snapshot create ${TNAPTLYMIRROR}-current from mirror ${TNAPTLYMIRROR}
 
 	# Publish the mirror
-	${APTLY} publish snapshot -gpg-key=185B4A890A3EA3E02AE2C4C60B63E7232D32AB0C ${TNAPTLYMIRROR}-current filesystem:truenas:truenas/${TRUENASBUILD}
+	${APTLY} publish snapshot -gpg-key=${GPGKEY} ${TNAPTLYMIRROR}-current filesystem:truenas:truenas/${TRUENASBUILD}
 
 }
 
