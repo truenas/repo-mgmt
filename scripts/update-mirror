@@ -2,49 +2,31 @@
 
 APTLY="aptly -config $(pwd)/conf/aptly.conf"
  
-update_truenas() {
+update_mirror() {
+	DIST="$1"
+	MIRROR="$2"
+	BUILD="$3"
+	REPO="$4"
 
 	# Cleanup old published / snapshots
-	${APTLY} publish drop ${TNDIST} filesystem:truenas:truenas/${TRUENASBUILD}
-	${APTLY} snapshot drop ${TNAPTLYMIRROR}-current
+	${APTLY} publish drop ${DIST} filesystem:truenas:truenas/${BUILD}
+	${APTLY} snapshot drop ${MIRROR}-current
 
 	# Check if we need to init the mirror
-	${APTLY} mirror list | grep -q -w ${TNAPTLYMIRROR}
+	${APTLY} mirror list | grep -q -w ${MIRROR}
 	if [ $? -ne 0 ] ; then
-		${APTLY} mirror create ${TNAPTLYMIRROR} ${TNREPO} ${TNDIST}
+		${APTLY} mirror create ${MIRROR} ${REPO} ${DIST}
 	fi
 
 	# Update the mirror from upstream
-	${APTLY} mirror update ${TNAPTLYMIRROR}
+	${APTLY} mirror update ${MIRROR}
 
 	# Create -current snapshot
-	${APTLY} snapshot create ${TNAPTLYMIRROR}-current from mirror ${TNAPTLYMIRROR}
+	${APTLY} snapshot create ${MIRROR}-current from mirror ${MIRROR}
 
 	# Publish the mirror
-	${APTLY} publish snapshot -gpg-key=${GPGKEY} ${TNAPTLYMIRROR}-current filesystem:truenas:truenas/${TRUENASBUILD}
+	${APTLY} publish snapshot -gpg-key=${GPGKEY} ${MIRROR}-current filesystem:truenas:truenas/${BUILD}
 
-}
-
-update_debian() {
- 
-	# Debian version(s) to mirror
-	DIST=${DEBDIST}
- 
-	# architecture
-	ARCH=amd64
- 
-	# Check if we need to init the mirror
-	${APTLY} mirror list | grep -q -w ${DEBAPTLYMIRROR}
-	if [ $? -ne 0 ] ; then
-		${APTLY} mirror create -with-udebs -with-sources ${DEBAPTLYMIRROR} ${DEBREPO} ${DEBDIST}
-	fi
-
-	# log timestamp
-	logger -t mirror[$$] updating Debian mirror
- 
-	${APTLY} mirror update ${DEPAPTLYMIRROR}
-
-	logger -t mirror[$$] finished updating Debian mirror
 }
 
 check_keyring() {
@@ -78,10 +60,10 @@ fi
 
 case $1 in
 	debian) 
-		update_debian
+		update_mirror "${DEBDIST}" "${DEBAPTLYMIRROR}" "${TRUENASBUILD}" "${DEBREPO}"
 		;;
 	truenas) 
-		update_truenas
+		update_mirror "${TNDIST}" "${TNAPTLTMIRROR}" "${TRUENASBUILD}" "${TNREPO}"
 		;;
 
 	*)
