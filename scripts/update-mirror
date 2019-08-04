@@ -10,7 +10,7 @@ update_truenas() {
 	# Check if we need to init the mirror
 	${APTLY} mirror list | grep -q -w ${TNAPTLYMIRROR}
 	if [ $? -ne 0 ] ; then
-		${APTLY} mirror create ${TNAPTLYMIRROR} ${DEBREPO} ${TNDIST}
+		${APTLY} mirror create ${TNAPTLYMIRROR} ${TNREPO} ${TNDIST}
 	fi
 
 	# log timestamp
