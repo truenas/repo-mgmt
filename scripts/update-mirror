@@ -7,6 +7,7 @@ update_mirror() {
 	MIRROR="$2"
 	BUILD="$3"
 	REPO="$4"
+	MOPTS="$5"
 
 	# Cleanup old published / snapshots
 	${APTLY} publish drop ${DIST} filesystem:truenas:truenas/${BUILD}
@@ -15,7 +16,7 @@ update_mirror() {
 	# Check if we need to init the mirror
 	${APTLY} mirror list | grep -q -w ${MIRROR}
 	if [ $? -ne 0 ] ; then
-		${APTLY} mirror create ${MIRROR} ${REPO} ${DIST}
+		${APTLY} mirror create ${MOPTS} ${MIRROR} ${REPO} ${DIST}
 	fi
 
 	# Update the mirror from upstream
@@ -60,7 +61,7 @@ fi
 
 case $1 in
 	debian) 
-		update_mirror "${DEBDIST}" "${DEBAPTLYMIRROR}" "${TRUENASBUILD}" "${DEBREPO}"
+		update_mirror "${DEBDIST}" "${DEBAPTLYMIRROR}" "${TRUENASBUILD}" "${DEBREPO}" "-with-udebs -with-sources"
 		;;
 	truenas) 
 		update_mirror "${TNDIST}" "${TNAPTLYMIRROR}" "${TRUENASBUILD}" "${TNREPO}"
