@@ -13,12 +13,15 @@ update_truenas() {
 		${APTLY} mirror create ${TNAPTLYMIRROR} ${TNREPO} ${TNDIST}
 	fi
 
-	# log timestamp
-	logger -t mirror[$$] updating TrueNAS mirror
- 
+	# Update the mirror from upstream
 	${APTLY} mirror update ${TNAPTLYMIRROR}
 
-	logger -t mirror[$$] finished updating TrueNAS mirror
+	# Re-create the -current snapshot
+	${APTLY} snapshot drop ${TNAPTLYMIRROR}-current >/dev/null 2>/dev/null
+	${APTLY} snapshot create ${TNAPTLYMIRROR}-current from mirror ${TNAPTLYMIRROR}
+
+	# Publish the mirror
+	${APTLY} publish snapshot -gpg-key=185B4A890A3EA3E02AE2C4C60B63E7232D32AB0C ${TNAPTLYMIRROR}-current filesystem:truenas:truenas/${TRUENASBUILD}
 
 }
 
