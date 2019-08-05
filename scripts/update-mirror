@@ -1,6 +1,6 @@
 #!/bin/bash
 
-APTLY="aptly -config '$(pwd)/conf/aptly.conf'"
+APTLY="aptly -config $(pwd)/conf/aptly.conf"
  
 update_mirror() {
 	DIST="$1"
