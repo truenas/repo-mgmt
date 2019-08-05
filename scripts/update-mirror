@@ -44,7 +44,7 @@ merge_mirrors() {
 	if [ $? -ne 0 ] ; then exit 1; fi
 
 	# Publish the resulting combined repo
-	${APTLY} publish snapshot -component="main,contrib,non-free" -distribution="truenas" -gpg-key=${GPGKEY} truenas filesystem:truenas:truenas/${BUILD}
+	${APTLY} publish snapshot -distribution="truenas" -gpg-key=${GPGKEY} truenas filesystem:truenas:truenas/${BUILD}
 	if [ $? -ne 0 ] ; then exit 1; fi
 }
 
