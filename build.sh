@@ -14,7 +14,8 @@ case $1 in
 	debmirror)
 		scripts/update-mirror debian
 		;;
-	merge-repos)
+	merge)
+		scripts/update-mirror merge
 		;;
 	*)
 		exit_err "Invalid option selected"

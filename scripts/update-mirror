@@ -21,13 +21,30 @@ update_mirror() {
 
 	# Update the mirror from upstream
 	${APTLY} mirror update ${MIRROR}
+	if [ $? -ne 0 ] ; then exit 1; fi
 
 	# Create -current snapshot
 	${APTLY} snapshot create ${MIRROR}-current from mirror ${MIRROR}
+	if [ $? -ne 0 ] ; then exit 1; fi
 
 	# Publish the mirror
 	${APTLY} publish snapshot -gpg-key=${GPGKEY} ${MIRROR}-current filesystem:truenas:truenas/${BUILD}
+	if [ $? -ne 0 ] ; then exit 1; fi
 
+}
+
+merge_mirrors() {
+
+	# Drop the previous snapshot
+	${APTLY} snapshot drop truenas
+
+	# Merge the two repos/snapshots
+	${APTLY} snapshot merge truenas ${TNAPTLYMIRROR}-current ${DEBAPTLYMIRROR}-current
+	if [ $? -ne 0 ] ; then exit 1; fi
+
+	# Publish the resulting combined repo
+	${APTLY} publish snapshot -gpg-key=${GPGKEY} truenas filesystem:truenas:truenas/${BUILD}
+	if [ $? -ne 0 ] ; then exit 1; fi
 }
 
 check_keyring() {
@@ -67,6 +84,9 @@ case $1 in
 		update_mirror "${TNDIST}" "${TNAPTLYMIRROR}" "${TRUENASBUILD}" "${TNREPO}"
 		;;
 
+	merge)
+	        merge_mirrors
+		;;
 	*)
 		echo "Invalid argument $1"
 		exit 1

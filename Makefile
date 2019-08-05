@@ -9,7 +9,7 @@ update-truenas:
 update-mirrors: update-debian update-truenas
 
 merge-repos:
-	sh build.sh merge-repos
+	sh build.sh merge
 
 push-repo:
 	sh build.sh push-repo
