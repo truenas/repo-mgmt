@@ -36,6 +36,7 @@ update_mirror() {
 merge_mirrors() {
 
 	# Drop the previous snapshot
+	${APTLY} publish drop truenas filesystem:truenas:truenas/${BUILD}
 	${APTLY} snapshot drop truenas
 
 	# Merge the two repos/snapshots
@@ -43,7 +44,7 @@ merge_mirrors() {
 	if [ $? -ne 0 ] ; then exit 1; fi
 
 	# Publish the resulting combined repo
-	${APTLY} publish snapshot -gpg-key=${GPGKEY} truenas filesystem:truenas:truenas/${BUILD}
+	${APTLY} publish snapshot -component="main,contrib,non-free" -distribution="truenas" -gpg-key=${GPGKEY} truenas filesystem:truenas:truenas/${BUILD}
 	if [ $? -ne 0 ] ; then exit 1; fi
 }
 
