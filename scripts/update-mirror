@@ -10,6 +10,7 @@ update_mirror() {
 	MOPTS="$5"
 
 	# Cleanup old published / snapshots
+	drop_truenas_repo
 	${APTLY} publish drop ${DIST} filesystem:truenas:truenas/${BUILD}
 	${APTLY} snapshot drop ${MIRROR}-current
 
@@ -33,11 +34,14 @@ update_mirror() {
 
 }
 
-merge_mirrors() {
-
+drop_truenas_repo() {
 	# Drop the previous snapshot
 	${APTLY} publish drop truenas filesystem:truenas:truenas/${BUILD}
 	${APTLY} snapshot drop truenas
+}
+
+merge_mirrors() {
+	drop_truenas_repo
 
 	# Merge the two repos/snapshots
 	${APTLY} snapshot merge truenas ${TNAPTLYMIRROR}-current ${DEBAPTLYMIRROR}-current
@@ -60,8 +64,6 @@ check_keyring() {
 	if [ $? -ne 0 ] ; then
 		gpg1 --no-default-keyring --keyring trustedkeys.gpg --import conf/truenas.key
 	fi
-
-
 }
 
 # Ensure debmirror is installed
