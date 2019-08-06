@@ -5,13 +5,12 @@ APTLY="aptly -config $(pwd)/conf/aptly.conf"
 update_mirror() {
 	DIST="$1"
 	MIRROR="$2"
-	BUILD="$3"
-	REPO="$4"
-	MOPTS="$5"
+	REPO="$3"
+	MOPTS="$4"
 
 	# Cleanup old published / snapshots
 	drop_truenas_repo
-	${APTLY} publish drop ${DIST} filesystem:truenas:truenas/${BUILD}
+	${APTLY} publish drop ${DIST} filesystem:truenas:truenas/${TRUENASBUILD}
 	${APTLY} snapshot drop ${MIRROR}-current
 
 	# Check if we need to init the mirror
@@ -29,14 +28,14 @@ update_mirror() {
 	if [ $? -ne 0 ] ; then exit 1; fi
 
 	# Publish the mirror
-	${APTLY} publish snapshot -gpg-key=${GPGKEY} ${MIRROR}-current filesystem:truenas:truenas/${BUILD}
+	${APTLY} publish snapshot -gpg-key=${GPGKEY} ${MIRROR}-current filesystem:truenas:truenas/${TRUENASBUILD}
 	if [ $? -ne 0 ] ; then exit 1; fi
 
 }
 
 drop_truenas_repo() {
 	# Drop the previous snapshot
-	${APTLY} publish drop truenas filesystem:truenas:truenas/${BUILD}
+	${APTLY} publish drop truenas filesystem:truenas:truenas/${TRUENASBUILD}
 	${APTLY} snapshot drop truenas
 }
 
@@ -48,7 +47,7 @@ merge_mirrors() {
 	if [ $? -ne 0 ] ; then exit 1; fi
 
 	# Publish the resulting combined repo
-	${APTLY} publish snapshot -distribution="truenas" -gpg-key=${GPGKEY} truenas filesystem:truenas:truenas/${BUILD}
+	${APTLY} publish snapshot -distribution="truenas" -gpg-key=${GPGKEY} truenas filesystem:truenas:truenas/${TRUENASBUILD}
 	if [ $? -ne 0 ] ; then exit 1; fi
 }
 
@@ -81,10 +80,10 @@ fi
 
 case $1 in
 	debian) 
-		update_mirror "${DEBDIST}" "${DEBAPTLYMIRROR}" "${TRUENASBUILD}" "${DEBREPO}" "-with-udebs -with-sources"
+		update_mirror "${DEBDIST}" "${DEBAPTLYMIRROR}" "${DEBREPO}" "-with-udebs -with-sources"
 		;;
 	truenas) 
-		update_mirror "${TNDIST}" "${TNAPTLYMIRROR}" "${TRUENASBUILD}" "${TNREPO}"
+		update_mirror "${TNDIST}" "${TNAPTLYMIRROR}" "${TNREPO}"
 		;;
 
 	merge)
