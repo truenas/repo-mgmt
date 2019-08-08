@@ -28,7 +28,7 @@ update_mirror() {
 	if [ $? -ne 0 ] ; then exit 1; fi
 
 	# Publish the mirror
-	${APTLY} publish snapshot -gpg-key=${GPGKEY} ${MIRROR}-current filesystem:truenas:truenas/${TRUENASBUILD}
+	${APTLY} publish snapshot -distribution="${DIST}" -gpg-key=${GPGKEY} ${MIRROR}-current filesystem:truenas:truenas/${TRUENASBUILD}
 	if [ $? -ne 0 ] ; then exit 1; fi
 
 }
