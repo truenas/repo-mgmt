@@ -7,10 +7,11 @@ update_mirror() {
 	MIRROR="$2"
 	REPO="$3"
 	MOPTS="$4"
+	PREFIX="$5"
 
 	# Cleanup old published / snapshots
 	drop_truenas_repo
-	${APTLY} publish drop ${DIST} filesystem:truenas:truenas/${TRUENASBUILD}
+	${APTLY} publish drop ${DIST} filesystem:truenas:${PREFIX}
 	${APTLY} snapshot drop ${MIRROR}-current
 
 	# Check if we need to init the mirror
@@ -28,7 +29,7 @@ update_mirror() {
 	if [ $? -ne 0 ] ; then exit 1; fi
 
 	# Publish the mirror
-	${APTLY} publish snapshot -distribution="${DIST}" -gpg-key=${GPGKEY} ${MIRROR}-current filesystem:truenas:truenas/${TRUENASBUILD}
+	${APTLY} publish snapshot -distribution="${DIST}" -gpg-key=${GPGKEY} ${MIRROR}-current filesystem:truenas:${PREFIX}
 	if [ $? -ne 0 ] ; then exit 1; fi
 
 }
@@ -80,10 +81,10 @@ fi
 
 case $1 in
 	debian) 
-		update_mirror "${DEBDIST}" "${DEBAPTLYMIRROR}" "${DEBREPO}" "-with-udebs -with-sources"
+		update_mirror "${DEBDIST}" "${DEBAPTLYMIRROR}" "${DEBREPO}" "-with-udebs -with-sources" "debian/unstable"
 		;;
 	truenas) 
-		update_mirror "${TNDIST}" "${TNAPTLYMIRROR}" "${TNREPO}"
+		update_mirror "${TNDIST}" "${TNAPTLYMIRROR}" "${TNREPO}" "truenas/${TRUENASBUILD}"
 		;;
 
 	merge)
