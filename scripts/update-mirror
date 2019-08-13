@@ -81,7 +81,7 @@ fi
 
 case $1 in
 	debian) 
-		update_mirror "${DEBDIST}" "${DEBAPTLYMIRROR}" "${DEBREPO}" "-with-udebs -with-sources" "debian/unstable"
+		update_mirror "${DEBDIST}" "${DEBAPTLYMIRROR}" "${DEBREPO}" "-with-udebs -with-sources -with-installer" "debian/unstable"
 		;;
 	truenas) 
 		update_mirror "${TNDIST}" "${TNAPTLYMIRROR}" "${TNREPO}" "" "truenas/${TRUENASBUILD}"
