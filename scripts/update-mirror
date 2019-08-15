@@ -44,7 +44,7 @@ merge_mirrors() {
 	drop_truenas_repo
 
 	# Merge the two repos/snapshots
-	${APTLY} snapshot merge truenas ${TNAPTLYMIRROR}-current ${DEBAPTLYMIRROR}-current
+	${APTLY} snapshot merge -latest truenas ${TNAPTLYMIRROR}-current ${DEBAPTLYMIRROR}-current
 	if [ $? -ne 0 ] ; then exit 1; fi
 
 	# Publish the resulting combined repo
