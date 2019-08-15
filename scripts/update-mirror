@@ -84,7 +84,7 @@ case $1 in
 		update_mirror "${DEBDIST}" "${DEBAPTLYMIRROR}" "${DEBREPO}" "-with-udebs -with-sources -with-installer" "debian/unstable"
 		;;
 	truenas) 
-		update_mirror "${TNDIST}" "${TNAPTLYMIRROR}" "${TNREPO}" "" "truenas/${TRUENASBUILD}"
+		update_mirror "${TNDIST}" "${TNAPTLYMIRROR}" "${TNREPO}" "-with-udebs" "truenas/${TRUENASBUILD}"
 		;;
 
 	merge)
