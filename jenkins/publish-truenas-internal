@@ -13,7 +13,7 @@ pipeline {
     stage('Publish') {
       steps {
         sshagent (credentials: ['cdn1-truenas']) {
-          sh 'cd /srv/aptly-publish && rsync -av --delete-after --delay-updates --exclude "./debian" -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" . truenas@cdn1.tn.ixsystems.com:/cdn/apt.tn.ixsystems.com/'
+          sh 'cd /srv/aptly-publish && rsync -av --delete-after --delay-updates --exclude "debian/unstable/" -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" . truenas@cdn1.tn.ixsystems.com:/cdn/apt.tn.ixsystems.com/'
         }
       }
     }
