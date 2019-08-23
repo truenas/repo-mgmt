@@ -1,6 +1,6 @@
 #!/bin/bash
 
-APTLY="aptly --config ./config/aptly.conf"
+APTLY="aptly --config ./conf/aptly.conf"
 
 TGT="./zfs-chroot"
 export TGT
