@@ -14,6 +14,9 @@ merge-repos:
 push-repo:
 	sh build.sh push-repo
 
+zfs:
+	sh build.sh zfs
+
 # Sync and build all
 all:
 	echo "Available targets:"
@@ -21,4 +24,5 @@ all:
 	echo "update-truenas - Sync with local buildd TrueNAS repository"
 	echo "merge-repos - Merge and sign the debian + truenas repo"
 	echo "push-repo - Push merged repo to staging CDN"
+	echo "zfs - Build zfs-modules package from zfs-dkms"
 	exit 1
