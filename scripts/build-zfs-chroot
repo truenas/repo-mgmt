@@ -55,6 +55,7 @@ ${APTLY} publish drop truenas filesystem:truenas:truenas/${TRUENASBUILD}
 
 # Drop the previous snapshot
 ${APTLY} snapshot drop truenas-local-snap
+${APTLY} snapshot drop truenas
 
 # Import the newest DEB packages
 ${APTLY} repo add -force-replace truenas-local ${TGT}/root/zfs-deb/
