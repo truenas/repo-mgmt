@@ -17,6 +17,9 @@ case $1 in
 	merge)
 		scripts/update-mirror merge
 		;;
+	zfs)
+		scripts/build-zfs-chroot
+		;;
 	*)
 		exit_err "Invalid option selected"
 		;;
