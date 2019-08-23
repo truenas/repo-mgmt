@@ -1,12 +1,14 @@
 #!/bin/bash
 
+APTLY="aptly --config ./config/aptly.conf"
+
 TGT="./zfs-chroot"
 export TGT
 
 if [ -d "$TGT" ] ; then
-	        umount -f $TGT/proc
-		        umount -f $TGT/sys
-			        rm -rf $TGT
+	umount -f $TGT/proc
+	umount -f $TGT/sys
+	rm -rf $TGT
 fi
 
 # Make sure the truenas target exists
@@ -14,38 +16,62 @@ ln -fs /usr/share/debootstrap/scripts/bullseye /usr/share/debootstrap/scripts/tr
 
 # Bootstrap the zfs chroot
 debootstrap truenas $TGT file:///srv/aptly-publish/truenas/unstable
+if [ $? -ne 0 ] ; then exit 1; fi
 
 # Make the chroot ready to build
 mount proc $TGT/proc -t proc
+if [ $? -ne 0 ] ; then exit 1; fi
 mount sysfs $TGT/sys -t sysfs
+if [ $? -ne 0 ] ; then exit 1; fi
 cp /etc/hosts $TGT/etc/hosts
 
 # Setup the apt repo
 echo "deb http://apt.tn.ixsystems.com/truenas/unstable/ truenas main" > ${TGT}/etc/apt/sources.list
 
 chroot ${TGT} apt update
-if [ $? -ne 0 ] ; then
-	   exit 1
-fi
+if [ $? -ne 0 ] ; then exit 1; fi
 
 chroot ${TGT} apt install -y locales
-if [ $? -ne 0 ] ; then
-	   exit 1
-fi
+if [ $? -ne 0 ] ; then exit 1; fi
 chroot ${TGT} apt install -y linux-image-amd64
-if [ $? -ne 0 ] ; then
-	   exit 1
-fi
+if [ $? -ne 0 ] ; then exit 1; fi
 chroot ${TGT} apt install -y debhelper
-if [ $? -ne 0 ] ; then
-	   exit 1
-fi
+if [ $? -ne 0 ] ; then exit 1; fi
 
 # Build the .deb package now
 cp scripts/build-zfs-deb ${TGT}/build.sh
 chmod 755 ${TGT}/build.sh
-
 chroot ${TGT} sh /build.sh
+if [ $? -ne 0 ] ; then exit 1; fi
+
+# Create the local aptly repo if not exist
+${APTLY} repo show truenas-local
 if [ $? -ne 0 ] ; then
-	   exit 1
+	${APTLY} repo create -distribution="truenas" truenas-local
 fi
+
+# Unpublish the repo
+${APTLY} publish drop truenas filesystem:truenas:truenas/${TRUENASBUILD}
+
+# Drop the previous snapshot
+${APTLY} snapshot drop truenas-local-snap
+
+# Import the newest DEB packages
+${APTLY} repo add -force-replace truenas-local ${TGT}/root/zfs-deb/
+
+# Re-create the snapshot
+${APTLY} snapshot create truenas-local-snap from repo truenas-local
+if [ $? -ne 0 ] ; then exit 1; fi
+
+# Merge the repos/snapshots
+${APTLY} snapshot merge -latest truenas ${TNAPTLYMIRROR}-current truenas-local-snap ${DEBAPTLYMIRROR}-current
+if [ $? -ne 0 ] ; then exit 1; fi
+
+# Publish the resulting combined repo
+${APTLY} publish snapshot -distribution="truenas" -gpg-key=${GPGKEY} truenas filesystem:truenas:truenas/${TRUENASBUILD}
+if [ $? -ne 0 ] ; then exit 1; fi
+
+# Cleanup
+umount -f $TGT/proc
+umount -f $TGT/sys
+rm -rf $TGT
