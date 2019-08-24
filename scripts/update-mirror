@@ -66,6 +66,12 @@ check_keyring() {
 	fi
 }
 
+update_zfs() {
+	# TODO - This can be set to run only if zfs-dkms packages
+	# have been updated
+	sh scripts/build-zfs-chroot
+}
+
 # Ensure debmirror is installed
 which aptly >/dev/null 2>/dev/null
 if [ $? -ne 0 ] ; then
@@ -89,6 +95,7 @@ case $1 in
 
 	merge)
 	        merge_mirrors
+		update_zfs
 		;;
 	*)
 		echo "Invalid argument $1"
