@@ -26,7 +26,7 @@ if [ $? -ne 0 ] ; then exit 1; fi
 cp /etc/hosts $TGT/etc/hosts
 
 # Setup the apt repo
-echo "deb http://apt.tn.ixsystems.com/truenas/unstable/ truenas main" > ${TGT}/etc/apt/sources.list
+echo "deb http://127.0.0.1/truenas/unstable/ truenas main" > ${TGT}/etc/apt/sources.list
 
 chroot ${TGT} apt update
 if [ $? -ne 0 ] ; then exit 1; fi
@@ -43,6 +43,10 @@ cp scripts/build-zfs-deb ${TGT}/build.sh
 chmod 755 ${TGT}/build.sh
 chroot ${TGT} sh /build.sh
 if [ $? -ne 0 ] ; then exit 1; fi
+
+# Cleanup the chroot
+umount -f $TGT/proc
+umount -f $TGT/sys
 
 # Create the local aptly repo if not exist
 ${APTLY} repo show truenas-local
@@ -73,6 +77,4 @@ ${APTLY} publish snapshot -distribution="truenas" -gpg-key=${GPGKEY} truenas fil
 if [ $? -ne 0 ] ; then exit 1; fi
 
 # Cleanup
-umount -f $TGT/proc
-umount -f $TGT/sys
 rm -rf $TGT
