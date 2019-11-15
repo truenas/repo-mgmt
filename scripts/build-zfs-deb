@@ -8,7 +8,7 @@ KERNEL_VERSION=$(dpkg --get-selections | grep -e "^linux-image-[0-9]" | awk '{pr
 
 apt -qyy install \
 	linux-image-${KERNEL_VERSION} \
-	linux-headers-${KERNEL_VERSION} \
+	linux-headers-${KERNEL_VERSION}
 apt -qyy install zfs-dkms
 
 DRIVER_VERSION=$(dkms status zfs | awk -F', ' '{print $2}')
