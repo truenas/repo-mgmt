@@ -55,7 +55,7 @@ def generate_package(path, distribution, version, build_deb):
     else:
         run('dpkg-buildpackage --no-check-builddeps -S -sa')
 
-    run('lintian --suppress-tags bad-distribution-in-changes-file')
+    run('lintian --suppress-tags bad-distribution-in-changes-file,changed-by-address-malformed')
 
 
 def setup_logging(verbose):
