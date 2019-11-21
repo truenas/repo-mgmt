@@ -40,7 +40,7 @@ def generate_package(path, distribution, version, build_deb):
     version = f'{version}+git{date}.{chash}'
     logger.debug('New Version: %s', version)
 
-    run(f'dch -b -v "{version}-1~truenas+1" --force-distribution -D {distribution} "New release"')
+    run(f'dch -M -b -v "{version}-1~truenas+1" --force-distribution -D {distribution} "New release"')
 
     # Add gitattributes to not export debian/
     with open('.gitattributes', 'w') as f:
