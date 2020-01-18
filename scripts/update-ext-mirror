@@ -11,7 +11,7 @@ update_mirror() {
 	COMPONENT="$6"
 
 	# Cleanup old published / snapshots
-	#drop_truenas_repo
+	drop_truenas_repo
 	${APTLY} publish drop ${DIST} filesystem:truenas:${PREFIX}
 	${APTLY} snapshot drop ${MIRROR}-current
 
