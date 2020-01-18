@@ -6,7 +6,10 @@ update-debian:
 update-truenas:
 	sh build.sh truenasmirror
 
-update-mirrors: update-debian update-truenas
+update-docker:
+	sh build.sh docker
+
+update-mirrors: update-debian update-docker update-truenas
 
 merge-repos:
 	sh build.sh merge
