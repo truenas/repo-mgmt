@@ -17,6 +17,9 @@ case $1 in
 	docker)
 		scripts/update-ext-mirror docker
 		;;
+	gluster)
+		scripts/update-ext-mirror gluster
+		;;
 	merge)
 		scripts/update-mirror merge
 		;;

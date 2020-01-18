@@ -9,7 +9,10 @@ update-truenas:
 update-docker:
 	sh build.sh docker
 
-update-mirrors: update-debian update-docker update-truenas
+update-gluster:
+	sh build.sh gluster
+
+update-mirrors: update-debian update-docker update-gluster update-truenas
 
 merge-repos:
 	sh build.sh merge
