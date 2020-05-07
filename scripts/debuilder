@@ -19,7 +19,7 @@ def run(cmd):
         raise ValueError(str(e) + e.stdout) from None
 
 
-def generate_package(path, distribution, version, build_deb):
+def generate_package(path, distribution, version, build_deb, no_sign):
 
     os.chdir(path)
 
@@ -53,9 +53,9 @@ def generate_package(path, distribution, version, build_deb):
     )
 
     if build_deb:
-        run('dpkg-buildpackage -sa')
+        run(f'dpkg-buildpackage -sa{" -uc -us" if no_sign else ""}')
     else:
-        run('dpkg-buildpackage --no-check-builddeps -S -sa')
+        run(f'dpkg-buildpackage --no-check-builddeps -S -sa{" -uc -us" if no_sign else ""}')
 
     run('lintian --suppress-tags bad-distribution-in-changes-file,changed-by-address-malformed')
 
@@ -79,11 +79,12 @@ def main():
     parser.add_argument('-b', '--build-deb', type=bool, default=False)
     parser.add_argument('-V', '--version', default=None)
     parser.add_argument('-v', '--verbose', action='count')
+    parser.add_argument('-ns', '--no-sign', action='store_true')
 
     args = parser.parse_args()
 
     setup_logging(args.verbose)
-    generate_package(args.path, args.distribution, args.version, args.build_deb)
+    generate_package(args.path, args.distribution, args.version, args.build_deb, args.no_sign)
 
 
 if __name__ == '__main__':
