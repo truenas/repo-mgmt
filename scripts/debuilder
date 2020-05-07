@@ -19,7 +19,7 @@ def run(cmd):
         raise ValueError(str(e) + e.stdout) from None
 
 
-def generate_package(path, distribution, version, build_deb):
+def generate_package(path, distribution, version, build_deb, no_sign):
 
     os.chdir(path)
 
@@ -28,6 +28,8 @@ def generate_package(path, distribution, version, build_deb):
 
     version = run('dpkg-parsechangelog -S version').split('-')[0].split('+')[0]
     logger.debug('Version: %s', version)
+
+    native_package = 'native' in run('dpkg-source --print-format .')
 
     ctime, chash = run('git show -s --format=%ct,%h HEAD').split(',')
     chash = chash[:7]
@@ -40,7 +42,7 @@ def generate_package(path, distribution, version, build_deb):
     version = f'{version}+git{date}.{chash}'
     logger.debug('New Version: %s', version)
 
-    run(f'dch -M -b -v "{version}-1~truenas+{0 if "experimental" in distribution else 1}" --force-distribution -D {distribution} "New release"')
+    run(f'dch -M -b -v "{version}{"" if native_package else "-1"}~truenas+{0 if "experimental" in distribution else 1}" --force-distribution -D {distribution} "New release"')
 
     # Add gitattributes to not export debian/
     with open('.gitattributes', 'w') as f:
@@ -51,9 +53,9 @@ def generate_package(path, distribution, version, build_deb):
     )
 
     if build_deb:
-        run('dpkg-buildpackage -sa')
+        run(f'dpkg-buildpackage -sa{" -uc -us" if no_sign else ""}')
     else:
-        run('dpkg-buildpackage --no-check-builddeps -S -sa')
+        run(f'dpkg-buildpackage --no-check-builddeps -S -sa{" -uc -us" if no_sign else ""}')
 
     run('lintian --suppress-tags bad-distribution-in-changes-file,changed-by-address-malformed')
 
@@ -77,11 +79,12 @@ def main():
     parser.add_argument('-b', '--build-deb', type=bool, default=False)
     parser.add_argument('-V', '--version', default=None)
     parser.add_argument('-v', '--verbose', action='count')
+    parser.add_argument('-ns', '--no-sign', action='store_true')
 
     args = parser.parse_args()
 
     setup_logging(args.verbose)
-    generate_package(args.path, args.distribution, args.version, args.build_deb)
+    generate_package(args.path, args.distribution, args.version, args.build_deb, args.no_sign)
 
 
 if __name__ == '__main__':
