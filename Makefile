@@ -12,23 +12,17 @@ update-docker:
 update-gluster:
 	sh build.sh gluster
 
-update-mirrors: update-debian update-docker update-gluster update-truenas
-
-merge-repos:
-	sh build.sh merge
+update-mirrors: update-debian update-docker update-gluster
 
 push-repo:
 	sh build.sh push-repo
 
-zfs:
-	sh build.sh zfs
-
 # Sync and build all
 all:
 	echo "Available targets:"
-	echo "update-debian - Sync with upstream Debian repository"
-	echo "update-truenas - Sync with local buildd TrueNAS repository"
-	echo "merge-repos - Merge and sign the debian + truenas repo"
-	echo "push-repo - Push merged repo to staging CDN"
-	echo "zfs - Build zfs-modules package from zfs-dkms"
+	echo "update-debian  - Sync with upstream Debian repository"
+	echo "update-docker  - Sync with upstream Docker repository"
+	echo "update-gluster - Sync with upstream Gluster repository"
+	echo "update-truenas - Update TrueNAS repo with local package directory"
+	echo "push-repo      - Push merged repo to staging CDN"
 	exit 1

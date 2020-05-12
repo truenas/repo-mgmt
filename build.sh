@@ -20,12 +20,6 @@ case $1 in
 	gluster)
 		scripts/update-ext-mirror gluster
 		;;
-	merge)
-		scripts/update-mirror merge
-		;;
-	zfs)
-		scripts/build-zfs-chroot
-		;;
 	*)
 		exit_err "Invalid option selected"
 		;;

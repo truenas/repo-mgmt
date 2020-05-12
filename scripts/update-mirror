@@ -41,27 +41,6 @@ drop_truenas_repo() {
 	${APTLY} snapshot drop truenas
 }
 
-merge_mirrors() {
-	drop_truenas_repo
-
-	# Build list of 3rd party repos
-	for i in `ls mirrors/*.cfg`
-	do
-		NAME=$(basename $i)
-		NAME=$(echo $NAME | sed 's|.cfg||g')
-		MIRRORS="$MIRRORS ${NAME}-current"
-	done
-
-	# Merge the two repos/snapshots
-	echo "${APTLY} snapshot merge -latest truenas ${TNAPTLYMIRROR}-current ${MIRRORS} ${DEBAPTLYMIRROR}-current"
-	${APTLY} snapshot merge -latest truenas ${TNAPTLYMIRROR}-current ${MIRRORS} ${DEBAPTLYMIRROR}-current
-	if [ $? -ne 0 ] ; then exit 1; fi
-
-	# Publish the resulting combined repo
-	${APTLY} publish snapshot -distribution="truenas" -gpg-key=${GPGKEY} truenas filesystem:truenas:truenas/${TRUENASBUILD}
-	if [ $? -ne 0 ] ; then exit 1; fi
-}
-
 check_keyring() {
 	# Ensure all the debian keys are installed
 	gpg1 --list-keys --keyring trustedkeys.gpg >/dev/null 2>/dev/null
@@ -74,12 +53,6 @@ check_keyring() {
 	if [ $? -ne 0 ] ; then
 		gpg1 --no-default-keyring --keyring trustedkeys.gpg --import conf/truenas.key
 	fi
-}
-
-update_zfs() {
-	# TODO - This can be set to run only if zfs-dkms packages
-	# have been updated
-	sh scripts/build-zfs-chroot
 }
 
 # Ensure debmirror is installed
@@ -100,12 +73,7 @@ case $1 in
 		update_mirror "${DEBDIST}" "${DEBAPTLYMIRROR}" "${DEBREPO}" "-with-udebs -with-sources -with-installer" "debian/unstable"
 		;;
 	truenas) 
-		update_mirror "${TNDIST}" "${TNAPTLYMIRROR}" "${TNREPO}" "-with-udebs" "truenas/${TRUENASBUILD}"
-		;;
-
-	merge)
-	        merge_mirrors
-		update_zfs
+		update_mirror "${TNDIST}" "${TNAPTLYMIRROR}" "${TNREPO}" "" "truenas/${TRUENASBUILD}"
 		;;
 	*)
 		echo "Invalid argument $1"
