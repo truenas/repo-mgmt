@@ -5,7 +5,7 @@ APTLY="aptly -config $(pwd)/conf/aptly.conf"
 update_mirror() {
 	REPO="truenas-unstable"
         PREFIX="unstable/truenas"
-	UPLOADDIR="/home/kris/repo"
+	UPLOADDIR="/home/pkgupload/repo"
 
 	# Cleanup old published / snapshots
 	${APTLY} publish drop ${REPO} filesystem:truenas:${PREFIX}
