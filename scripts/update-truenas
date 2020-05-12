@@ -8,7 +8,7 @@ update_mirror() {
 	UPLOADDIR="/home/pkgupload/repo"
 
 	# Cleanup old published / snapshots
-	${APTLY} publish drop ${REPO} filesystem:truenas:${PREFIX}
+	${APTLY} publish drop truenas filesystem:truenas:${PREFIX}
 	${APTLY} snapshot drop ${REPO}-snapshot
 
 	# Check if we need to init the mirror
