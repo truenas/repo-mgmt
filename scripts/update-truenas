@@ -3,42 +3,33 @@
 APTLY="aptly -config $(pwd)/conf/aptly.conf"
  
 update_mirror() {
-	DIST="$1"
-	MIRROR="$2"
-	REPO="$3"
-	MOPTS="$4"
-	PREFIX="$5"
+	REPO="truenas-unstable"
+        PREFIX="unstable/truenas"
+	UPLOADDIR="/home/kris/repo"
 
 	# Cleanup old published / snapshots
-	drop_truenas_repo
-	${APTLY} publish drop ${DIST} filesystem:truenas:${PREFIX}
-	${APTLY} snapshot drop ${MIRROR}-current
+	${APTLY} publish drop ${REPO} filesystem:truenas:${PREFIX}
+	${APTLY} snapshot drop ${REPO}-snapshot
 
 	# Check if we need to init the mirror
-	${APTLY} mirror list | grep -q -w "\[${MIRROR}\]"
+	${APTLY} repo list | grep -q -w "\[${REPO}\]"
 	if [ $? -ne 0 ] ; then
-		${APTLY} mirror create ${MOPTS} ${MIRROR} ${REPO} ${DIST}
+		${APTLY} repo create ${REPO}
 		if [ $? -ne 0 ] ; then exit 1; fi
 	fi
 
 	# Update the mirror from upstream
-	${APTLY} mirror update ${MIRROR}
+	${APTLY} repo add -remove-files -force-replace ${REPO} ${UPLOADDIR}
 	if [ $? -ne 0 ] ; then exit 1; fi
 
-	# Create -current snapshot
-	${APTLY} snapshot create ${MIRROR}-current from mirror ${MIRROR}
+	# Create -snapshot snapshot
+	${APTLY} snapshot create ${REPO}-snapshot from repo ${REPO}
 	if [ $? -ne 0 ] ; then exit 1; fi
 
 	# Publish the mirror
-	${APTLY} publish snapshot -distribution="${DIST}" -gpg-key=${GPGKEY} ${MIRROR}-current filesystem:truenas:${PREFIX}
+	${APTLY} publish snapshot -distribution="truenas" -gpg-key=${GPGKEY} ${REPO}-snapshot filesystem:truenas:${PREFIX}
 	if [ $? -ne 0 ] ; then exit 1; fi
 
-}
-
-drop_truenas_repo() {
-	# Drop the previous snapshot
-	${APTLY} publish drop truenas filesystem:truenas:truenas/${TRUENASBUILD}
-	${APTLY} snapshot drop truenas
 }
 
 check_keyring() {
@@ -68,15 +59,4 @@ if [ ! -e "/usr/share/keyrings/debian-archive-keyring.gpg" ] ; then
 	exit 1
 fi
 
-case $1 in
-	debian) 
-		update_mirror "${DEBDIST}" "${DEBAPTLYMIRROR}" "${DEBREPO}" "-with-udebs -with-sources -with-installer" "debian/unstable"
-		;;
-	truenas) 
-		update_mirror "${TNDIST}" "${TNAPTLYMIRROR}" "${TNREPO}" "" "truenas/${TRUENASBUILD}"
-		;;
-	*)
-		echo "Invalid argument $1"
-		exit 1
-		;;
-esac
+update_mirror
