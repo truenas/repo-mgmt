@@ -11,9 +11,8 @@ update_mirror() {
 	COMPONENT="$6"
 
 	# Cleanup old published / snapshots
-	drop_truenas_repo
 	${APTLY} publish drop ${DIST} filesystem:truenas:${PREFIX}
-	${APTLY} snapshot drop ${MIRROR}-current
+	${APTLY} snapshot drop ${MIRROR}-snapshot
 
 	# Check if we need to init the mirror
 	${APTLY} mirror list | grep -q -w "\[${MIRROR}\]"
@@ -29,22 +28,15 @@ update_mirror() {
 	${APTLY} mirror update ${MIRROR}
 	if [ $? -ne 0 ] ; then exit 1; fi
 
-	# Create -current snapshot
-	${APTLY} snapshot create ${MIRROR}-current from mirror ${MIRROR}
+	# Create -snapshot snapshot
+	${APTLY} snapshot create ${MIRROR}-snapshot from mirror ${MIRROR}
 	if [ $? -ne 0 ] ; then exit 1; fi
 
 	# Publish the mirror
-	${APTLY} publish snapshot -distribution="${DIST}" -gpg-key=${GPGKEY} ${MIRROR}-current filesystem:truenas:${PREFIX}
+	${APTLY} publish snapshot -distribution="${DIST}" -gpg-key=${GPGKEY} ${MIRROR}-snapshot filesystem:truenas:${PREFIX}
 	if [ $? -ne 0 ] ; then exit 1; fi
 
 }
-
-drop_truenas_repo() {
-	# Drop the previous snapshot
-	${APTLY} publish drop truenas filesystem:truenas:truenas/${TRUENASBUILD}
-	${APTLY} snapshot drop truenas
-}
-
 
 # Ensure debmirror is installed
 which aptly >/dev/null 2>/dev/null
@@ -67,4 +59,4 @@ URL=$(cat mirrors/${1}.cfg | grep URL= | cut -d '=' -f 2)
 DIST=$(cat mirrors/${1}.cfg | grep DISTRIBUTION= | cut -d '=' -f 2)
 COMPONENT=$(cat mirrors/${1}.cfg | grep COMPONENT= | cut -d '=' -f 2)
 
-update_mirror "${DIST}" "$1" "${URL}" "" "truenas/${1}" "$COMPONENT"
+update_mirror "${DIST}" "$1" "${URL}" "" "unstable/${1}" "$COMPONENT"

@@ -9,10 +9,10 @@ exit_err() {
 
 case $1 in
 	truenasmirror)
-		scripts/update-mirror truenas
+		scripts/update-truenas
 		;;
 	debmirror)
-		scripts/update-mirror debian
+		scripts/update-debian
 		;;
 	docker)
 		scripts/update-ext-mirror docker

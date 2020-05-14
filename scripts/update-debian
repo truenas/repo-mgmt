@@ -3,14 +3,13 @@
 APTLY="aptly -config $(pwd)/conf/aptly.conf"
  
 update_mirror() {
-	DIST="$1"
-	MIRROR="$2"
-	REPO="$3"
-	MOPTS="$4"
-	PREFIX="$5"
+        MIRROR="debian-unstable"
+	REPO="http://deb.debian.org/debian/"
+	DIST="bullseye"
+	MOPTS="-with-udebs -with-sources -with-installer"
+	PREFIX="unstable/debian"
 
 	# Cleanup old published / snapshots
-	drop_truenas_repo
 	${APTLY} publish drop ${DIST} filesystem:truenas:${PREFIX}
 	${APTLY} snapshot drop ${MIRROR}-current
 
@@ -33,12 +32,6 @@ update_mirror() {
 	${APTLY} publish snapshot -distribution="${DIST}" -gpg-key=${GPGKEY} ${MIRROR}-current filesystem:truenas:${PREFIX}
 	if [ $? -ne 0 ] ; then exit 1; fi
 
-}
-
-drop_truenas_repo() {
-	# Drop the previous snapshot
-	${APTLY} publish drop truenas filesystem:truenas:truenas/${TRUENASBUILD}
-	${APTLY} snapshot drop truenas
 }
 
 check_keyring() {
@@ -68,15 +61,4 @@ if [ ! -e "/usr/share/keyrings/debian-archive-keyring.gpg" ] ; then
 	exit 1
 fi
 
-case $1 in
-	debian) 
-		update_mirror "${DEBDIST}" "${DEBAPTLYMIRROR}" "${DEBREPO}" "-with-udebs -with-sources -with-installer" "debian/unstable"
-		;;
-	truenas) 
-		update_mirror "${TNDIST}" "${TNAPTLYMIRROR}" "${TNREPO}" "" "truenas/${TRUENASBUILD}"
-		;;
-	*)
-		echo "Invalid argument $1"
-		exit 1
-		;;
-esac
+update_mirror
