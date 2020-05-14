@@ -20,6 +20,9 @@ case $1 in
 	gluster)
 		scripts/update-ext-mirror gluster
 		;;
+	kubernetes)
+		scripts/update-ext-mirror kubernetes
+		;;
 	*)
 		exit_err "Invalid option selected"
 		;;

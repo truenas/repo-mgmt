@@ -1,0 +1,24 @@
+pipeline {
+  agent {
+    node {
+       label 'Deb-Mirror'
+    }
+  }
+  stages {
+    stage('Checkout') {
+      steps {
+         checkout scm
+      }
+    }
+    stage('Sync') {
+      steps {
+        sh 'make update-kubernetes'
+      }
+    }
+  }
+  post {  
+    failure {  
+      mail bcc: '', body: "<b>Jenkins: Aptly Build Failure</b><br>Project: ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} <br> URL build: ${env.BUILD_URL}", cc: '', charset: 'UTF-8', from: '', mimeType: 'text/html', replyTo: '', subject: "ERROR CI: Project name -> ${env.JOB_NAME}", to: "kris@ixsystems.com";  
+     }  
+  }
+}
