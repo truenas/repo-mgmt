@@ -23,6 +23,11 @@ case $1 in
 	kubernetes)
 		scripts/update-ext-mirror kubernetes
 		;;
+	nvidia-docker)
+		scripts/update-ext-mirror libnvidia
+		scripts/update-ext-mirror nvidia-container
+		scripts/update-ext-mirror nvidia-docker
+		;;
 	*)
 		exit_err "Invalid option selected"
 		;;
