@@ -10,8 +10,13 @@ update_mirror() {
 	PREFIX="$5"
 	COMPONENT="$6"
 
+	SNAPDIST="${DIST}"
+	if [ "$SNAPDIST" = "/" ] ; then
+		SNAPDIST="bullseye"
+	fi
+
 	# Cleanup old published / snapshots
-	${APTLY} publish drop ${DIST} filesystem:truenas:${PREFIX}
+	${APTLY} publish drop ${SNAPDIST} filesystem:truenas:${PREFIX}
 	${APTLY} snapshot drop ${MIRROR}-snapshot
 
 	# Check if we need to init the mirror
@@ -33,7 +38,7 @@ update_mirror() {
 	if [ $? -ne 0 ] ; then exit 1; fi
 
 	# Publish the mirror
-	${APTLY} publish snapshot -distribution="${DIST}" -gpg-key=${GPGKEY} ${MIRROR}-snapshot filesystem:truenas:${PREFIX}
+	${APTLY} publish snapshot -distribution="${SNAPDIST}" -gpg-key=${GPGKEY} ${MIRROR}-snapshot filesystem:truenas:${PREFIX}
 	if [ $? -ne 0 ] ; then exit 1; fi
 
 }
