@@ -12,16 +12,13 @@ update-docker:
 update-gluster:
 	sh build.sh gluster
 
-update-ceph:
-	sh build.sh ceph
-
 update-kubernetes:
 	sh build.sh kubernetes
 
 update-nvidia-docker:
 	sh build.sh nvidia-docker
 
-update-mirrors: update-debian update-docker update-gluster update-kubernetes update-nvidia-docker update-ceph
+update-mirrors: update-debian update-docker update-gluster update-kubernetes update-nvidia-docker
 
 push-repo:
 	sh build.sh push-repo
@@ -29,7 +26,6 @@ push-repo:
 # Sync and build all
 all:
 	echo "Available targets:"
-	echo "update-ceph       - Sync with upstream Ceph repository"
 	echo "update-debian     - Sync with upstream Debian repository"
 	echo "update-docker     - Sync with upstream Docker repository"
 	echo "update-gluster    - Sync with upstream Gluster repository"
