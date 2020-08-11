@@ -11,7 +11,7 @@ update_mirror() {
 	COMPONENT="$6"
 	FILTER="$7"
 	if [ -n "$FILTER" ] ; then
-		FOPTS="-filter=\"$FILTER\""
+		FOPTS="-filter=\'$FILTER\'"
 	else
 		unset FOPTS
 	fi
