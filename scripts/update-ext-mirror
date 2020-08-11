@@ -10,11 +10,6 @@ update_mirror() {
 	PREFIX="$5"
 	COMPONENT="$6"
 	FILTER="$7"
-	if [ -n "$FILTER" ] ; then
-		MOPTS='-filter="'$FILTER'"'
-	else
-		unset MOPTS
-	fi
 
 	SNAPDIST="${DIST}"
 	if [ "$SNAPDIST" = "/" ] ; then
@@ -31,9 +26,15 @@ update_mirror() {
 		# Install the GPG key for this repo
 		cat mirrors/$2.gpg | gpg --no-default-keyring --keyring trustedkeys.gpg --import
 		# Create the repo fresh
-		echo "${APTLY} mirror create ${MOPTS} ${MIRROR} ${REPO} ${DIST} ${COMPONENT}"
-		${APTLY} mirror create ${MOPTS} ${MIRROR} ${REPO} ${DIST} ${COMPONENT}
-		if [ $? -ne 0 ] ; then exit 1; fi
+		if [ -z "$FILTER" ] ; then
+			echo "${APTLY} mirror create ${MOPTS} ${MIRROR} ${REPO} ${DIST} ${COMPONENT}"
+			${APTLY} mirror create ${MOPTS} ${MIRROR} ${REPO} ${DIST} ${COMPONENT}
+			if [ $? -ne 0 ] ; then exit 1; fi
+		else
+			echo "${APTLY} mirror create ${MOPTS} ${MIRROR} ${REPO} ${DIST} ${COMPONENT}"
+			${APTLY} mirror create ${MOPTS} -filter="$FILTER" ${MIRROR} ${REPO} ${DIST} ${COMPONENT}
+			if [ $? -ne 0 ] ; then exit 1; fi
+		fi
 	fi
 
 	# Update the mirror from upstream
