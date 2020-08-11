@@ -23,6 +23,9 @@ case $1 in
 	kubernetes)
 		scripts/update-ext-mirror kubernetes
 		;;
+	helm)
+		scripts/update-ext-mirror helm
+		;;
 	nvidia-docker)
 		scripts/update-ext-mirror libnvidia
 		scripts/update-ext-mirror nvidia-container
