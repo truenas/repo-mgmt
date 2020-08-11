@@ -32,7 +32,7 @@ update_mirror() {
 		cat mirrors/$2.gpg | gpg --no-default-keyring --keyring trustedkeys.gpg --import
 		# Create the repo fresh
 		echo "${APTLY} mirror create ${MOPTS} ${FOPTS} ${MIRROR} ${REPO} ${DIST} ${COMPONENT}"
-		${APTLY} mirror create ${MOPTS} ${MIRROR} ${REPO} ${DIST} ${COMPONENT} ${FOPTS}
+		${APTLY} mirror create ${MOPTS} ${FOPTS} ${MIRROR} ${REPO} ${DIST} ${COMPONENT}
 		if [ $? -ne 0 ] ; then exit 1; fi
 	fi
 
