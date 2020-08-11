@@ -9,6 +9,12 @@ update_mirror() {
 	MOPTS="$4"
 	PREFIX="$5"
 	COMPONENT="$6"
+	FILTER="$7"
+	if [ -n "$FILTER" ] ; then
+		FOPTS="-filter=$FILTER"
+	else
+		unset FOPTS
+	fi
 
 	SNAPDIST="${DIST}"
 	if [ "$SNAPDIST" = "/" ] ; then
@@ -25,7 +31,7 @@ update_mirror() {
 		# Install the GPG key for this repo
 		cat mirrors/$2.gpg | gpg --no-default-keyring --keyring trustedkeys.gpg --import
 		# Create the repo fresh
-		${APTLY} mirror create ${MOPTS} ${MIRROR} ${REPO} ${DIST} ${COMPONENT}
+		${APTLY} mirror create ${MOPTS} ${FOPTS} ${MIRROR} ${REPO} ${DIST} ${COMPONENT}
 		if [ $? -ne 0 ] ; then exit 1; fi
 	fi
 
@@ -63,5 +69,6 @@ fi
 URL=$(cat mirrors/${1}.cfg | grep URL= | cut -d '=' -f 2)
 DIST=$(cat mirrors/${1}.cfg | grep DISTRIBUTION= | cut -d '=' -f 2)
 COMPONENT=$(cat mirrors/${1}.cfg | grep COMPONENT= | cut -d '=' -f 2)
+FILTER=$(cat mirrors/${1}.cfg | grep FILTER= | cut -d '=' -f 2-)
 
-update_mirror "${DIST}" "$1" "${URL}" "" "unstable/${1}" "$COMPONENT"
+update_mirror "${DIST}" "$1" "${URL}" "" "unstable/${1}" "$COMPONENT" "$FILTER"
