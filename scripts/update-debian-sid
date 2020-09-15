@@ -1,0 +1,64 @@
+#!/bin/bash
+
+APTLY="aptly -config $(pwd)/conf/aptly.conf"
+ 
+update_mirror() {
+        MIRROR="debian-sid"
+	REPO="http://deb.debian.org/debian/"
+	DIST="sid"
+	MOPTS="-with-udebs -with-sources -with-installer"
+	PREFIX="unstable/debian-sid"
+
+	# Cleanup old published / snapshots
+	${APTLY} publish drop ${DIST} filesystem:truenas:${PREFIX}
+	${APTLY} snapshot drop ${MIRROR}-current
+
+	# Check if we need to init the mirror
+	${APTLY} mirror list | grep -q -w "\[${MIRROR}\]"
+	if [ $? -ne 0 ] ; then
+		${APTLY} mirror create ${MOPTS} ${MIRROR} ${REPO} ${DIST}
+		if [ $? -ne 0 ] ; then exit 1; fi
+	fi
+
+	# Update the mirror from upstream
+	${APTLY} mirror update ${MIRROR}
+	if [ $? -ne 0 ] ; then exit 1; fi
+
+	# Create -current snapshot
+	${APTLY} snapshot create ${MIRROR}-current from mirror ${MIRROR}
+	if [ $? -ne 0 ] ; then exit 1; fi
+
+	# Publish the mirror
+	${APTLY} publish snapshot -distribution="${DIST}" -gpg-key=${GPGKEY} ${MIRROR}-current filesystem:truenas:${PREFIX}
+	if [ $? -ne 0 ] ; then exit 1; fi
+
+}
+
+check_keyring() {
+	# Ensure all the debian keys are installed
+	gpg1 --list-keys --keyring trustedkeys.gpg >/dev/null 2>/dev/null
+	if [ $? -ne 0 ] ; then
+		gpg1 --no-default-keyring --keyring trustedkeys.gpg --import /usr/share/keyrings/debian-archive-keyring.gpg
+	fi
+
+	# Make sure TrueNAS key is installed
+	gpg1 --list-keys --keyring trustedkeys.gpg | grep -q ixsystems
+	if [ $? -ne 0 ] ; then
+		gpg1 --no-default-keyring --keyring trustedkeys.gpg --import conf/truenas.key
+	fi
+}
+
+# Ensure debmirror is installed
+which aptly >/dev/null 2>/dev/null
+if [ $? -ne 0 ] ; then
+	echo "Missing 'aptly' utilty, please install with 'apt install aptly'"
+	exit 1
+fi
+
+# Ensure that debian-keyring is installed
+if [ ! -e "/usr/share/keyrings/debian-archive-keyring.gpg" ] ; then
+	echo "Missing debian-keyring, please install with 'apt install debian-keyring'"
+	exit 1
+fi
+
+update_mirror

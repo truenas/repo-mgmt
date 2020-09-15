@@ -3,6 +3,9 @@
 update-debian:
 	sh build.sh debmirror
 
+update-debian-sid:
+	sh build.sh debmirror-sid
+
 update-truenas:
 	sh build.sh truenasmirror
 

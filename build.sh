@@ -14,6 +14,9 @@ case $1 in
 	debmirror)
 		scripts/update-debian
 		;;
+	debmirror-sid)
+		scripts/update-debian-sid
+		;;
 	docker)
 		scripts/update-ext-mirror docker
 		;;
