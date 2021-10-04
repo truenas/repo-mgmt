@@ -3,11 +3,11 @@
 APTLY="aptly -config $(pwd)/conf/aptly.conf"
  
 update_mirror() {
-        MIRROR="debian-unstable"
+        MIRROR="bullseye"
 	REPO="http://deb.debian.org/debian/"
 	DIST="bullseye"
 	MOPTS="-with-udebs -with-sources -with-installer"
-	PREFIX="unstable/debian"
+	PREFIX="stable/bullseye"
 
 	# Cleanup old published / snapshots
 	${APTLY} publish drop ${DIST} filesystem:truenas:${PREFIX}

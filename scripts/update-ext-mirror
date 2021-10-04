@@ -73,4 +73,4 @@ DIST=$(cat mirrors/${1}.cfg | grep DISTRIBUTION= | cut -d '=' -f 2)
 COMPONENT=$(cat mirrors/${1}.cfg | grep COMPONENT= | cut -d '=' -f 2)
 FILTER=$(cat mirrors/${1}.cfg | grep FILTER= | cut -d '=' -f 2-)
 
-update_mirror "${DIST}" "$1" "${URL}" "" "unstable/${1}" "$COMPONENT" "$FILTER"
+update_mirror "${DIST}" "$1" "${URL}" "" "stable/${1}" "$COMPONENT" "$FILTER"
