@@ -3,8 +3,8 @@
 APTLY="aptly -config $(pwd)/conf/aptly.conf"
  
 update_mirror() {
-	REPO="truenas-unstable"
-        PREFIX="unstable/truenas"
+	REPO="angelfish"
+        PREFIX="stable/angelfish"
 	UPLOADDIR="/home/pkgupload/repo"
 
 	# Cleanup old published / snapshots
