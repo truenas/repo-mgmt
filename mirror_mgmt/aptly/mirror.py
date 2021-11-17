@@ -1,5 +1,7 @@
 import subprocess
 
+from mirror_mgmt.exceptions import CallError
+
 from typing import Optional, ParamSpec
 
 from .run import aptly_run
@@ -34,8 +36,17 @@ class Mirror:
 
     def create(
         self, repository: str, distribution: str, component: str, filters: Optional[str] = None,
-        extra_options: Optional[list] = None
+        extra_options: Optional[list] = None, gpg_key: Optional[str] = None,
     ) -> subprocess.CompletedProcess:
+        if gpg_key:
+            cp = subprocess.Popen(
+                ['gpg', '--no-default-keyring', '--keyring', 'trustedkeys.gpg', '--import'],
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE,
+            )
+            stdout, stderr = cp.communicate(input=gpg_key.encode())
+            if cp.returncode:
+                raise CallError(f'Failed to add gpg key for {repository!r}: {stderr.decode(errors="ignore")}')
+
         return run(list(filter(
             bool, ['create'] + (extra_options or []) + ([f'-filter={filters}'] if filters else []) + [
                 self.name, repository, distribution, component,
