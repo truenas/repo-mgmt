@@ -7,7 +7,7 @@ import sys
 logger = logging.getLogger('mirror_mgmt')
 
 
-def setup_logging():
+def setup_logging() -> None:
     logging.basicConfig(level=logging.DEBUG, format='[%(asctime)s] %(message)s', force=True)
     handler = logging.StreamHandler(sys.stderr)
     handler.setLevel(logging.DEBUG)
@@ -18,11 +18,11 @@ def setup_logging():
         coloredlogs.install(logging.DEBUG, fmt='[%(asctime)s] %(message)s', logger=logger)
 
 
-def validate_config():
+def validate_config() -> None:
     pass
 
 
-def main():
+def main() -> None:
     setup_logging()
     parser = argparse.ArgumentParser(prog='mirror_mgmt')
     subparsers = parser.add_subparsers(help='sub-command help', dest='action')

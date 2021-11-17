@@ -2,13 +2,16 @@ import logging
 import os
 import subprocess
 
+from typing import ParamSpec
+
 from mirror_mgmt.exceptions import CallError
 
 
 logger = logging.getLogger(__name__)
+P = ParamSpec('P')
 
 
-def run(*args, **kwargs):
+def run(*args: P.args, **kwargs: P.kwargs) -> subprocess.CompletedProcess:
     if isinstance(args[0], list):
         args = tuple(args[0])
     kwargs.setdefault('stdout', subprocess.PIPE)
