@@ -1,12 +1,4 @@
 release: "ANGELFISH"
-build: "stable"  # What build is this? stable/unstable/release
-deb_repo: "http://deb.debian.org/debian/"  # Where to pull upstream debian packages from
-deb_dist: "bullseye"  # What debian distribution to sync
-local_mirror_name: "bullseye"  # Local aptly mirror name
-tn_repo: "/home/upload/truenas-pkgs/"  # Where to pull TN deb packages from
-tn_dist: "angelfish"  # What truenas distribution to sync
-tn_aptly_mirror: "stable-angelfish"  # Local aptly mirror name
-pub_repo: "truenas"  # Public repo name
 gpg_key: "20998A97"  # Signing key to use
 publish_prefix_default: "stable"
 mirror_suffix: "-nightlies"
@@ -45,5 +37,3 @@ mirrors:
     url: "https://nvidia.github.io/nvidia-docker/debian10/amd64"
     distribution: "/"
     component: ""
-
-# TODO: Please remove redundant configuration variables
