@@ -3,7 +3,7 @@ gpg_key: "20998A97"  # Signing key to use
 publish_prefix_default: "stable"
 mirror_suffix: "-nightlies"
 mirrors:
-  truenas:
+  - name: "truenas"
     url: "http://deb.debian.org/debian/"
     distribution: "bullseye"
     publish_prefix_override: "stable/bullseye"
@@ -12,28 +12,28 @@ mirrors:
       - "-with-udebs"
       - "-with-sources"
       - "-with-installer"
-  docker:
+  - name: "docker"
     url: "https://download.docker.com/linux/debian"
     distribution: "buster"
     component: "stable"
-  gluster:
+  - name: "gluster"
     url: "https://download.gluster.org/pub/gluster/glusterfs/LATEST/Debian/bullseye/amd64/apt/"
     distribution: "bullseye"
     component: "main"
-  helm:
+  - name: "helm"
     url: "https://baltocdn.com/helm/stable/debian"
     distribution: "all"
     component: "main"
     filter: "helm (>= 3.2.4)"
-  libnvidia:
+  - name: "libnvidia"
     url: "https://nvidia.github.io/libnvidia-container/debian10/amd64"
     distribution: "/"
     component: ""
-  nvidia-container:
+  - name: "nvidia-container"
     url: "https://nvidia.github.io/nvidia-container-runtime/debian10/amd64"
     distribution: "/"
     component: ""
-  nvidia-docker:
+  - name: "nvidia-docker"
     url: "https://nvidia.github.io/nvidia-docker/debian10/amd64"
     distribution: "/"
     component: ""
