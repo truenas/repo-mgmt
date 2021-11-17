@@ -19,25 +19,25 @@ class Mirror:
         self.repository = kwargs.get('repository')
         self.distribution = kwargs.get('distribution')
         self.component = kwargs.get('component')
+        self.extra_options = kwargs.get('extra_options')
+        self.filter = kwargs.get('filter')
+
+    def update_configuration(self, mirror_options: dict) -> None:
+        self.repository = mirror_options['url']
+        self.distribution = mirror_options['distribution']
+        self.component = mirror_options['component']
+        self.extra_options = mirror_options.get('extra_options', [])
+        self.filter = mirror_options.get('filter')
 
     @property
     def exists(self) -> bool:
         return run(['show', self.name], check=False).returncode == 0
 
-    def ensure_exists(
-        self, repository: Optional[str] = None, distribution: Optional[str] = None, component: Optional[str] = None,
-        filters: Optional[str] = None, extra_options: Optional[list] = None,
-    ) -> None:
-        if not self.exists:
-            self.create(
-                repository or self.repository, distribution or self.distribution, component or self.component,
-                filters, extra_options,
-            )
+    def create(self, gpg_key: Optional[str] = None) -> subprocess.CompletedProcess:
+        missing = [k for k in ('repository', 'distribution', 'name') if not getattr(self, k)]
+        if missing:
+            raise CallError(f'{", ".join(missing)!r} must be specified before attempting to create mirror')
 
-    def create(
-        self, repository: str, distribution: str, component: str, filters: Optional[str] = None,
-        extra_options: Optional[list] = None, gpg_key: Optional[str] = None,
-    ) -> subprocess.CompletedProcess:
         if gpg_key:
             cp = subprocess.Popen(
                 ['gpg', '--no-default-keyring', '--keyring', 'trustedkeys.gpg', '--import'],
@@ -45,11 +45,11 @@ class Mirror:
             )
             stdout, stderr = cp.communicate(input=gpg_key.encode())
             if cp.returncode:
-                raise CallError(f'Failed to add gpg key for {repository!r}: {stderr.decode(errors="ignore")}')
+                raise CallError(f'Failed to add gpg key for {self.repository!r}: {stderr.decode(errors="ignore")}')
 
         return run(list(filter(
-            bool, ['create'] + (extra_options or []) + ([f'-filter={filters}'] if filters else []) + [
-                self.name, repository, distribution, component,
+            bool, ['create'] + (self.extra_options or []) + ([f'-filter={self.filter}'] if self.filter else []) + [
+                self.name, self.repository, self.distribution, self.component,
             ]
         )))
 

@@ -13,8 +13,12 @@ mirrors:
   truenas:
     url: "http://deb.debian.org/debian/"
     distribution: "bullseye"
-    prefix: "bullseye"
+    publish_prefix_override: "stable/bullseye"
     component: ""
+    extra_options:
+      - "-with-udebs"
+      - "-with-sources"
+      - "-with-installer"
   docker:
     url: "https://download.docker.com/linux/debian"
     distribution: "buster"
