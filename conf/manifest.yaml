@@ -8,5 +8,37 @@ tn_dist: "angelfish"  # What truenas distribution to sync
 tn_aptly_mirror: "stable-angelfish"  # Local aptly mirror name
 pub_repo: "truenas"  # Public repo name
 gpg_key: "20998A97"  # Signing key to use
+publish_prefix_default: "stable"
+mirrors:
+  truenas:
+    url: "http://deb.debian.org/debian/"
+    distribution: "bullseye"
+    prefix: "bullseye"
+    component: ""
+  docker:
+    url: "https://download.docker.com/linux/debian"
+    distribution: "buster"
+    component: "stable"
+  gluster:
+    url: "https://download.gluster.org/pub/gluster/glusterfs/LATEST/Debian/bullseye/amd64/apt/"
+    distribution: "bullseye"
+    component: "main"
+  helm:
+    url: "https://baltocdn.com/helm/stable/debian"
+    distribution: "all"
+    component: "main"
+    filter: "helm (>= 3.2.4)"
+  libnvidia:
+    url: "https://nvidia.github.io/libnvidia-container/debian10/amd64"
+    distribution: "/"
+    component: ""
+  nvidia-container:
+    url: "https://nvidia.github.io/nvidia-container-runtime/debian10/amd64"
+    distribution: "/"
+    component: ""
+  nvidia-docker:
+    url: "https://nvidia.github.io/nvidia-docker/debian10/amd64"
+    distribution: "/"
+    component: ""
 
 # TODO: Please remove redundant configuration variables
