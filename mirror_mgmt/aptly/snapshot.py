@@ -22,5 +22,14 @@ class Snapshot:
     def create(self, mirror) -> None:
         run(['create', self.name, 'from', 'mirror', mirror])
 
-    def publish(self, distribution, endpoint, gpg_key) -> None:
-        pass
+    def publish(self, distribution: str, endpoint: str, gpg_key: str) -> None:
+        aptly_run([
+            'publish', 'snapshot', f'-distribution="{distribution}"', f'-gpg-key={gpg_key}', self.name, endpoint,
+        ])
+
+    def drop_published_snapshot(self, distribution: str, endpoint: str) -> None:
+        aptly_run(['publish', 'drop', distribution, endpoint], check=False)
+
+
+def list_snapshots():
+    return [Snapshot(line) for line in run(['list', '-raw']).stdout.splitlines()]
