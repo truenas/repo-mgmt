@@ -9,6 +9,7 @@ tn_aptly_mirror: "stable-angelfish"  # Local aptly mirror name
 pub_repo: "truenas"  # Public repo name
 gpg_key: "20998A97"  # Signing key to use
 publish_prefix_default: "stable"
+mirror_suffix: "-nightlies"
 mirrors:
   truenas:
     url: "http://deb.debian.org/debian/"

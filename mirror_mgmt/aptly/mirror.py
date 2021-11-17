@@ -16,18 +16,16 @@ def run(command: list, **kwargs: P.kwargs) -> subprocess.CompletedProcess:
 class Mirror:
     def __init__(self, name: str, **kwargs: P.kwargs):
         self.name = name
-        self.repository = kwargs.get('repository')
-        self.distribution = kwargs.get('distribution')
-        self.component = kwargs.get('component')
-        self.extra_options = kwargs.get('extra_options')
-        self.filter = kwargs.get('filter')
+        self.update_configuration(kwargs)
 
     def update_configuration(self, mirror_options: dict) -> None:
-        self.repository = mirror_options['url']
-        self.distribution = mirror_options['distribution']
-        self.component = mirror_options['component']
+        self.repository = mirror_options.get('url')
+        self.distribution = mirror_options.get('distribution')
+        self.component = mirror_options.get('component')
         self.extra_options = mirror_options.get('extra_options', [])
         self.filter = mirror_options.get('filter')
+        if mirror_options.get('name'):
+            self.name = mirror_options['name']
 
     @property
     def exists(self) -> bool:

@@ -1,5 +1,7 @@
 import subprocess
 
+from mirror_mgmt.exceptions import CallError
+
 from typing import ParamSpec
 
 from .run import aptly_run
@@ -16,8 +18,12 @@ def run(command: list, **kwargs: P.kwargs) -> subprocess.CompletedProcess:
 
 
 class Snapshot:
-    def __init__(self, name: str):
+    def __init__(self, name: str, **kwargs: P.kwargs):
         self.name = name
+        self.update_configuration(kwargs)
+
+    def update_configuration(self, options: dict) -> None:
+        self.distribution = options.get('distribution')
 
     @property
     def exists(self) -> bool:
@@ -26,14 +32,20 @@ class Snapshot:
     def create(self, mirror) -> None:
         run(['create', self.name, 'from', 'mirror', mirror])
 
-    def publish(self, distribution: str, prefix: str, gpg_key: str) -> None:
+    def publish(self, prefix: str, gpg_key: str) -> None:
+        if not self.distribution:
+            raise CallError('Distribution must be specified when publishing snapshot')
+
         aptly_run([
-            'publish', 'snapshot', f'-distribution="{distribution}"', f'-gpg-key={gpg_key}',
+            'publish', 'snapshot', f'-distribution="{self.distribution}"', f'-gpg-key={gpg_key}',
             self.name, get_endpoint(prefix),
         ])
 
-    def drop_published_snapshot(self, distribution: str, prefix: str) -> None:
-        aptly_run(['publish', 'drop', distribution, get_endpoint(prefix)], check=False)
+    def drop_published_snapshot(self, prefix: str) -> None:
+        if not self.distribution:
+            raise CallError('Distribution must be specified when removing published snapshot')
+
+        aptly_run(['publish', 'drop', self.distribution, get_endpoint(prefix)], check=False)
 
 
 def list_snapshots():
