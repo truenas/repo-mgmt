@@ -27,10 +27,10 @@ def main() -> None:
     parser = argparse.ArgumentParser(prog='mirror_mgmt')
     subparsers = parser.add_subparsers(help='sub-command help', dest='action')
 
-    subparsers.add_parser('create_mirror', help='Create new mirror from the configuration provided')
+    subparsers.add_parser('create_mirror', help='Create new mirrors from the configuration provided')
 
     args = parser.parse_args()
-    if args.action == 'create_mirror':
+    if args.action == 'create_mirrors':
         pass
     else:
         parser.print_help()
