@@ -4,6 +4,7 @@ import logging
 import sys
 
 from .create import create_mirrors
+from .update import update_mirrors
 
 
 logger = logging.getLogger('mirror_mgmt')
@@ -31,11 +32,16 @@ def main() -> None:
 
     subparsers.add_parser('create_mirrors', help='Create new mirrors from the configuration provided')
     subparsers.add_parser('update_mirrors', help='Update mirrors specified in the manifest')
+    snapshot_parser = subparsers.add_parser(
+        'create_snapshots', help='Create snapshots of mirrors specified in the manifest'
+    )
+    snapshot_parser.add_argument('--snapshot-suffix', help='Specify suffix to use for creating snapshot from mirrors')
+    snapshot_parser.add_argument('--publish-snapshot', '-ps', help='Publish snapshot', default=False)
 
     args = parser.parse_args()
     if args.action == 'create_mirrors':
         create_mirrors()
     elif args.action == 'update_mirrors':
-        pass
+        update_mirrors()
     else:
         parser.print_help()

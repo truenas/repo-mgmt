@@ -2,7 +2,7 @@ import subprocess
 
 from mirror_mgmt.exceptions import CallError
 
-from typing import ParamSpec
+from typing_extensions import ParamSpec
 
 from .run import aptly_run
 
@@ -27,7 +27,7 @@ class Snapshot:
 
     @property
     def exists(self) -> bool:
-        return run(['show', self.name], check=False).returncode == 0
+        return run(['show', self.name], check=False, log=False).returncode == 0
 
     def create(self, mirror) -> None:
         run(['create', self.name, 'from', 'mirror', mirror])

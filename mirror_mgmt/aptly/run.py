@@ -1,6 +1,6 @@
 import subprocess
 
-from typing import ParamSpec
+from typing_extensions import ParamSpec
 
 from mirror_mgmt.utils.paths import APTLY_CONF
 from mirror_mgmt.utils.run import run

@@ -2,7 +2,7 @@ import subprocess
 
 from mirror_mgmt.exceptions import CallError
 
-from typing import Optional, ParamSpec
+from typing_extensions import ParamSpec
 
 from .run import aptly_run
 
@@ -30,7 +30,7 @@ class Mirror:
 
     @property
     def exists(self) -> bool:
-        return run(['show', self.name], check=False).returncode == 0
+        return run(['show', self.name], check=False, log=False).returncode == 0
 
     def create(self) -> subprocess.CompletedProcess:
         missing = [k for k in ('repository', 'distribution', 'name') if not getattr(self, k)]

@@ -6,14 +6,14 @@ from .list import get_manifest_mirrors
 logger = logging.getLogger(__name__)
 
 
-def create_mirrors() -> None:
-    logger.info('Updating mirrors')
+def update_mirrors() -> None:
+    logger.debug('Updating mirrors')
 
     for mirror in get_manifest_mirrors():
         if not mirror.exists:
-            logger.debug('Creating %r mirror', mirror.name)
+            logger.info('Creating %r mirror', mirror.name)
             mirror.create()
 
-        logging.debug('Updating %r mirror', mirror.name)
+        logging.info('Updating %r mirror', mirror.name)
         mirror.update()
-        logging.debug('Updated %r mirror', mirror.name)
+        logging.info('Updated %r mirror', mirror.name)

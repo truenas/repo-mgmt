@@ -2,7 +2,7 @@ import logging
 import os
 import subprocess
 
-from typing import ParamSpec
+from typing_extensions import ParamSpec
 
 from mirror_mgmt.exceptions import CallError
 

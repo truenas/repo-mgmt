@@ -9,12 +9,12 @@ logger = logging.getLogger(__name__)
 
 def create_mirrors() -> None:
     manifest = get_manifest()
-    logger.info('Creating mirrors')
-    logger.info('Defined mirror suffix is %r', manifest['mirror_suffix'])
+    logger.debug('Creating mirrors')
+    logger.debug('Defined mirror suffix is %r', manifest['mirror_suffix'])
 
     for mirror in get_manifest_mirrors():
         if mirror.exists:
-            logger.debug('%r already exists, skipping creating it', mirror.name)
+            logger.info('%r already exists, skipping creating it', mirror.name)
         else:
             mirror.create()
-            logger.debug('Successfully created %r mirror', mirror.name)
+            logger.info('Successfully created %r mirror', mirror.name)
