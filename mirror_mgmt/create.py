@@ -23,5 +23,5 @@ def create_mirrors() -> None:
         if mirror.exists:
             logger.debug(f'%r already exists, skipping creating it', mirror.name)
         else:
-            mirror.create(manifest['gpg_key'])
+            mirror.create()
             logger.debug('Successfully created %r mirror', mirror.name)

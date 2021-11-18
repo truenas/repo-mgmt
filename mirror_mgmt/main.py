@@ -3,6 +3,8 @@ import coloredlogs
 import logging
 import sys
 
+from .create import create_mirrors
+
 
 logger = logging.getLogger('mirror_mgmt')
 
@@ -31,6 +33,6 @@ def main() -> None:
 
     args = parser.parse_args()
     if args.action == 'create_mirrors':
-        pass
+        create_mirrors()
     else:
         parser.print_help()

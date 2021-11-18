@@ -24,6 +24,7 @@ class Mirror:
         self.component = mirror_options.get('component')
         self.extra_options = mirror_options.get('extra_options', [])
         self.filter = mirror_options.get('filter')
+        self.gpg_key = mirror_options.get('gpg_key')
         if mirror_options.get('name'):
             self.name = mirror_options['name']
 
@@ -31,17 +32,17 @@ class Mirror:
     def exists(self) -> bool:
         return run(['show', self.name], check=False).returncode == 0
 
-    def create(self, gpg_key: Optional[str] = None) -> subprocess.CompletedProcess:
+    def create(self) -> subprocess.CompletedProcess:
         missing = [k for k in ('repository', 'distribution', 'name') if not getattr(self, k)]
         if missing:
             raise CallError(f'{", ".join(missing)!r} must be specified before attempting to create mirror')
 
-        if gpg_key:
+        if self.gpg_key:
             cp = subprocess.Popen(
                 ['gpg', '--no-default-keyring', '--keyring', 'trustedkeys.gpg', '--import'],
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE,
             )
-            stdout, stderr = cp.communicate(input=gpg_key.encode())
+            stdout, stderr = cp.communicate(input=self.gpg_key.encode())
             if cp.returncode:
                 raise CallError(f'Failed to add gpg key for {self.repository!r}: {stderr.decode(errors="ignore")}')
 
