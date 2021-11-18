@@ -1,17 +1,10 @@
 import logging
 
-from .aptly.mirror import Mirror
+from .list import get_manifest_mirrors
 from .utils.manifest import get_manifest
 
 
 logger = logging.getLogger(__name__)
-
-
-def get_manifest_mirrors() -> list:
-    mirror_suffix = get_manifest()['mirror_suffix']
-    return [
-        Mirror(**m) for m in map(lambda m: m.update({'name': f'{m["name"]}{mirror_suffix}'}), get_manifest()['mirrors'])
-    ]
 
 
 def create_mirrors() -> None:
@@ -21,7 +14,7 @@ def create_mirrors() -> None:
 
     for mirror in get_manifest_mirrors():
         if mirror.exists:
-            logger.debug(f'%r already exists, skipping creating it', mirror.name)
+            logger.debug('%r already exists, skipping creating it', mirror.name)
         else:
             mirror.create()
             logger.debug('Successfully created %r mirror', mirror.name)
