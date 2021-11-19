@@ -3,7 +3,6 @@ import subprocess
 from mirror_mgmt.utils.manifest import get_manifest
 from mirror_mgmt.exceptions import CallError
 
-from datetime import datetime
 from typing import Optional
 from typing_extensions import ParamSpec
 
@@ -41,10 +40,9 @@ class Mirror:
     def exists(self) -> bool:
         return run(['show', self.mirror_name], check=False, log=False).returncode == 0
 
-    def create_snapshot(self, snapshot_suffix: Optional[str] = None) -> Snapshot:
-        name = f'{self.name}-{datetime.today().strftime("%Y-%m-%d")}-{snapshot_suffix}'
+    def create_snapshot(self, snapshot_name: Optional[str] = None) -> Snapshot:
         snap = Snapshot(
-            name, self.mirror_name, distribution=self.distribution,
+            snapshot_name, self.mirror_name, distribution=self.distribution,
             publish_prefix_override=self.publish_prefix_override,
         )
         if snap.exists:

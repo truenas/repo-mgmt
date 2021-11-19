@@ -56,8 +56,8 @@ class Snapshot:
             self.name, self.endpoint,
         ])
 
-    def drop_published_snapshot(self, prefix: str) -> None:
+    def drop_published_snapshot(self) -> None:
         if not self.distribution:
             raise CallError('Distribution must be specified when removing published snapshot')
 
-        aptly_run(['publish', 'drop', self.snap_distribution, self.endpoint], check=False)
+        aptly_run(['publish', 'drop', self.snap_distribution, self.endpoint], check=False, log=False)

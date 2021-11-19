@@ -4,6 +4,7 @@ import logging
 import sys
 
 from .create import create_mirrors
+from .snapshot import create_snapshots, publish_snapshots
 from .update import update_mirrors
 
 
@@ -36,12 +37,18 @@ def main() -> None:
         'create_snapshots', help='Create snapshots of mirrors specified in the manifest'
     )
     snapshot_parser.add_argument('--snapshot-suffix', help='Specify suffix to use for creating snapshot from mirrors')
-    snapshot_parser.add_argument('--publish-snapshot', '-ps', help='Publish snapshot', default=False)
+    snapshot_parser.add_argument(
+        '--publish-snapshot', '-ps', help='Publish snapshot', default=False, action='store_true'
+    )
 
     args = parser.parse_args()
     if args.action == 'create_mirrors':
         create_mirrors()
     elif args.action == 'update_mirrors':
         update_mirrors()
+    elif args.action == 'create_snapshots':
+        snapshots = create_snapshots(args.snapshot_suffix)
+        if args.publish_snapshot:
+            publish_snapshots(snapshots)
     else:
         parser.print_help()

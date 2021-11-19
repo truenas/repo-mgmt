@@ -9,7 +9,7 @@
       - "-with-sources"
       - "-with-installer"
     "name": "truenas"
-    "publish_prefix_override": "stable/bullseye"
+    "publish_prefix_override": "stable/debian"
     "url": "http://deb.debian.org/debian/"
   - "component": "stable"
     "distribution": "buster"
