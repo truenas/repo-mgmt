@@ -44,3 +44,7 @@
     "url": "https://nvidia.github.io/nvidia-docker/debian10/amd64"
 "publish_prefix_default": "stable"
 "release": "ANGELFISH"
+repositories:
+  - "name": "angelfish"
+    "distribution": "truenas"
+    "package_directory": "/home/pkgupload/repo"

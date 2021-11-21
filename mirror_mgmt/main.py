@@ -3,9 +3,12 @@ import coloredlogs
 import logging
 import sys
 
-from .create import create_mirrors
-from .snapshot import create_snapshots, publish_snapshots
-from .update import update_mirrors
+from .create import create_mirrors, create_repositories
+from .snapshot import (
+    create_snapshots_of_mirrors, create_snapshots_of_repositories,
+    publish_snapshots_of_mirrors, publish_snapshots_of_repositories,
+)
+from .update import update_mirrors, update_repositories
 
 
 logger = logging.getLogger('mirror_mgmt')
@@ -31,24 +34,37 @@ def main() -> None:
     parser = argparse.ArgumentParser(prog='mirror_mgmt')
     subparsers = parser.add_subparsers(help='sub-command help', dest='action')
 
-    subparsers.add_parser('create_mirrors', help='Create new mirrors from the configuration provided')
-    subparsers.add_parser('update_mirrors', help='Update mirrors specified in the manifest')
-    snapshot_parser = subparsers.add_parser(
-        'create_snapshots', help='Create snapshots of mirrors specified in the manifest'
-    )
-    snapshot_parser.add_argument('--snapshot-suffix', help='Specify suffix to use for creating snapshot from mirrors')
-    snapshot_parser.add_argument(
-        '--publish-snapshot', '-ps', help='Publish snapshot', default=False, action='store_true'
-    )
+    for object_singular, object_plural in (('mirror', 'mirrors'), ('repository', 'repositories')):
+        subparsers.add_parser(
+            f'create_{object_plural}', help=f'fCreate new {object_plural} from the configuration provided'
+        )
+        subparsers.add_parser(f'update_{object_plural}', help=f'Update {object_plural} specified in the manifest')
+        snapshot_parser = subparsers.add_parser(
+            f'create_{object_plural}_snapshots', help=f'Create snapshots of {object_plural} specified in the manifest'
+        )
+        snapshot_parser.add_argument(
+            '--snapshot-suffix', help=f'Specify suffix to use for creating snapshot from {object_singular}'
+        )
+        snapshot_parser.add_argument(
+            f'--publish-snapshot', '-ps', help='Publish snapshot', default=False, action='store_true'
+        )
 
     args = parser.parse_args()
     if args.action == 'create_mirrors':
         create_mirrors()
+    elif args.action == 'create_repositories':
+        create_repositories()
     elif args.action == 'update_mirrors':
         update_mirrors()
-    elif args.action == 'create_snapshots':
-        snapshots = create_snapshots(args.snapshot_suffix)
+    elif args.action == 'update_repositories':
+        update_repositories()
+    elif args.action == 'create_mirrors_snapshots':
+        snapshots = create_snapshots_of_mirrors(args.snapshot_suffix)
         if args.publish_snapshot:
-            publish_snapshots(snapshots)
+            publish_snapshots_of_mirrors(snapshots)
+    elif args.action == 'create_repositories_snapshots':
+        snapshots = create_snapshots_of_repositories(args.snapshot_suffix)
+        if args.publish_snapshot:
+            publish_snapshots_of_repositories(snapshots)
     else:
         parser.print_help()

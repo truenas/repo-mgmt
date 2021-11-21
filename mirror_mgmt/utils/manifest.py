@@ -33,6 +33,22 @@ MANIFEST_SCHEMA = {
                 },
                 'required': ['name', 'url', 'distribution', 'component']
             }],
+            'repositories': {
+                'type': 'array',
+                'items': [{
+                    'type': 'object',
+                    'items': [{
+                        'type': 'object',
+                        'properties': {
+                            'name': {'type': 'string'},
+                            'distribution': {'type': 'string'},
+                            'package_directory': {'type': 'string'},
+                            'publish_prefix_override': {'type': 'string'},
+                        },
+                        'required': ['name', 'distribution', 'package_directory'],
+                    }]
+                }]
+            },
         },
     },
     'required': [
@@ -57,8 +73,7 @@ def get_manifest_str() -> str:
 def get_manifest() -> dict:
     try:
         manifest = yaml.safe_load(get_manifest_str())
-        # jsonschema.validate(manifest, MANIFEST_SCHEMA)
-        # TODO: FIX json schema validation
+        jsonschema.validate(manifest, MANIFEST_SCHEMA)
         return manifest
     except yaml.YAMLError:
         raise CallError('Provided manifest has invalid format')
