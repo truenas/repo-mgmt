@@ -55,7 +55,6 @@ MANIFEST_SCHEMA = {
         'release',
         'gpg_key',
         'publish_prefix_default',
-        'mirror_suffix',
         'mirrors',
     ],
 }

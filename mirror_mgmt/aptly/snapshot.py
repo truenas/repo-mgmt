@@ -1,29 +1,27 @@
 import os.path
-import subprocess
 
 from mirror_mgmt.utils.manifest import get_manifest
 from mirror_mgmt.exceptions import CallError
 
 from typing_extensions import ParamSpec
 
+from .resource import Resource
 from .run import aptly_run
 
 P = ParamSpec('P')
 
 
-def run(command: list, **kwargs: P.kwargs) -> subprocess.CompletedProcess:
-    return aptly_run(['snapshot'] + command, **kwargs)
+class Snapshot(Resource):
 
+    RESOURCE_NAME = 'snapshot'
 
-class Snapshot:
-    def __init__(self, name: str, mirror_name: str, **kwargs: P.kwargs):
-        self.name = name
-        self.mirror_name = mirror_name
-        self.update_configuration(kwargs)
+    def __init__(self, name: str, parent_resource: Resource, **kwargs: P.kwargs):
+        super().__init__(name, **kwargs)
+        self.parent_resource = parent_resource
 
-    def update_configuration(self, options: dict) -> None:
-        self.distribution = options.get('distribution')
-        self.publish_prefix_override = options.get('publish_prefix_override')
+    @property
+    def resource_name(self) -> str:
+        return self.name
 
     @property
     def endpoint(self) -> str:
@@ -31,17 +29,18 @@ class Snapshot:
 
     @property
     def publish_prefix(self) -> str:
-        return self.publish_prefix_override or os.path.join(get_manifest()['publish_prefix_default'], self.mirror_name)
-
-    @property
-    def exists(self) -> bool:
-        return run(['show', self.name], check=False, log=False).returncode == 0
+        return self.publish_prefix_override or os.path.join(
+            get_manifest()['publish_prefix_default'], self.parent_resource.name
+        )
 
     def create(self) -> None:
-        run(['create', self.name, 'from', 'mirror', self.mirror_name])
+        self.run([
+            'create', self.resource_name, 'from',
+            self.parent_resource.RESOURCE_NAME, self.parent_resource.resource_name
+        ])
 
     def delete(self) -> None:
-        run(['drop', self.name], log=False)
+        self.run(['drop', self.resource_name], log=False)
 
     @property
     def snap_distribution(self) -> str:
@@ -53,7 +52,7 @@ class Snapshot:
 
         aptly_run([
             'publish', 'snapshot', f'-distribution="{self.snap_distribution}"', f'-gpg-key={gpg_key}',
-            self.name, self.endpoint,
+            self.resource_name, self.endpoint,
         ])
 
     def drop_published_snapshot(self) -> None:

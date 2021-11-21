@@ -1,8 +1,7 @@
 ---
 "gpg_key": "20998A97"
-"mirror_suffix": "-nightlies"
 "publish_prefix_default": "stable"
-"release": "ANGELFISH"
+"release": "angelfish"
 "mirrors":
   - "component": ""
     "distribution": "bullseye"

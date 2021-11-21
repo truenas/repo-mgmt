@@ -1,55 +1,25 @@
 import subprocess
 
-from mirror_mgmt.utils.manifest import get_manifest
 from mirror_mgmt.exceptions import CallError
 
-from typing import Optional
 from typing_extensions import ParamSpec
 
-from .run import aptly_run
-from .snapshot import Snapshot
+from .repository import RepositoryBase
 
 P = ParamSpec('P')
 
 
-def run(command: list, **kwargs: P.kwargs) -> subprocess.CompletedProcess:
-    return aptly_run(['mirror'] + command, **kwargs)
+class Mirror(RepositoryBase):
 
+    RESOURCE_NAME = 'mirror'
 
-class Mirror:
     def __init__(self, name: str, **kwargs: P.kwargs):
-        self.name = name
-        self.update_configuration(kwargs)
-
-    @property
-    def mirror_name(self) -> str:
-        return f'{self.name}{get_manifest()["mirror_suffix"]}'
-
-    def update_configuration(self, mirror_options: dict) -> None:
-        self.repository = mirror_options.get('url')
-        self.distribution = mirror_options.get('distribution')
-        self.component = mirror_options.get('component')
-        self.extra_options = mirror_options.get('extra_options', [])
-        self.filter = mirror_options.get('filter')
-        self.gpg_key = mirror_options.get('gpg_key')
-        self.publish_prefix_override = mirror_options.get('publish_prefix_override')
-        if mirror_options.get('name'):
-            self.name = mirror_options['name']
-
-    @property
-    def exists(self) -> bool:
-        return run(['show', self.mirror_name], check=False, log=False).returncode == 0
-
-    def create_snapshot(self, snapshot_name: Optional[str] = None) -> Snapshot:
-        snap = Snapshot(
-            snapshot_name, self.mirror_name, distribution=self.distribution,
-            publish_prefix_override=self.publish_prefix_override,
-        )
-        if snap.exists:
-            snap.delete()
-
-        snap.create()
-        return snap
+        super().__init__(name, **kwargs)
+        self.repository = kwargs.get('url')
+        self.component = kwargs.get('component')
+        self.extra_options = kwargs.get('extra_options', [])
+        self.filter = kwargs.get('filter')
+        self.gpg_key = kwargs.get('gpg_key')
 
     def create(self) -> subprocess.CompletedProcess:
         missing = [k for k in ('repository', 'distribution', 'name') if not getattr(self, k)]
@@ -65,11 +35,11 @@ class Mirror:
             if cp.returncode:
                 raise CallError(f'Failed to add gpg key for {self.repository!r}: {stderr.decode(errors="ignore")}')
 
-        return run(list(filter(
+        return self.run(list(filter(
             bool, ['create'] + (self.extra_options or []) + ([f'-filter={self.filter}'] if self.filter else []) + [
-                self.mirror_name, self.repository, self.distribution, self.component,
+                self.resource_name, self.repository, self.distribution, self.component,
             ]
         )))
 
     def update(self) -> None:
-        run(['update', self.mirror_name])
+        self.run(['update', self.resource_name])
