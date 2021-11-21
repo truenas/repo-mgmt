@@ -9,6 +9,7 @@ from .snapshot import (
     publish_snapshots_of_mirrors, publish_snapshots_of_repositories,
 )
 from .update import update_mirrors, update_repositories
+from .validate import validate
 
 
 logger = logging.getLogger('mirror_mgmt')
@@ -23,10 +24,6 @@ def setup_logging() -> None:
     logger.propagate = False
     if sys.stdout.isatty():
         coloredlogs.install(logging.DEBUG, fmt='[%(asctime)s] %(message)s', logger=logger)
-
-
-def validate_config() -> None:
-    pass
 
 
 def main() -> None:
@@ -49,20 +46,36 @@ def main() -> None:
             f'--publish-snapshot', '-ps', help='Publish snapshot', default=False, action='store_true'
         )
 
+    validate_parser = subparsers.add_parser(
+        'validate', help='Validate TrueNAS Scale mirror management manifest and system state'
+    )
+    for action in ('manifest', 'system_state'):
+        validate_parser.add_argument(f'--validate-{action}', dest=action, action='store_true')
+        validate_parser.add_argument(f'--no-validate-{action}', dest=action, action='store_false')
+        validate_parser.set_defaults(**{action: True})
+
     args = parser.parse_args()
-    if args.action == 'create_mirrors':
+    if args.action == 'validate':
+        validate(args.system_state, args.manifest)
+    elif args.action == 'create_mirrors':
+        validate()
         create_mirrors()
     elif args.action == 'create_repositories':
+        validate()
         create_repositories()
     elif args.action == 'update_mirrors':
+        validate()
         update_mirrors()
     elif args.action == 'update_repositories':
+        validate()
         update_repositories()
     elif args.action == 'create_mirrors_snapshots':
+        validate()
         snapshots = create_snapshots_of_mirrors(args.snapshot_suffix)
         if args.publish_snapshot:
             publish_snapshots_of_mirrors(snapshots)
     elif args.action == 'create_repositories_snapshots':
+        validate()
         snapshots = create_snapshots_of_repositories(args.snapshot_suffix)
         if args.publish_snapshot:
             publish_snapshots_of_repositories(snapshots)
