@@ -44,4 +44,3 @@ def create_snapshots_of_repositories(snapshot_suffix: str) -> list:
 
 def publish_snapshots_of_repositories(snapshots: list) -> None:
     common_publish_snapshots(snapshots, 'repository')
-

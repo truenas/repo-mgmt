@@ -47,7 +47,7 @@ def main() -> None:
             '--snapshot-suffix', help=f'Specify suffix to use for creating snapshot from {object_singular}'
         )
         snapshot_parser.add_argument(
-            f'--publish-snapshot', '-ps', help='Publish snapshot', default=False, action='store_true'
+            '--publish-snapshot', '-ps', help='Publish snapshot', default=False, action='store_true'
         )
 
     validate_parser = subparsers.add_parser(
