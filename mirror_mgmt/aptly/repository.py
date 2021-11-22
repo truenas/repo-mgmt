@@ -42,7 +42,7 @@ class Repository(RepositoryBase):
         if missing:
             raise CallError(f'{", ".join(missing)!r} must be specified before attempting to create repository')
 
-        return self.run(['create', self.name])
+        return self.run(['create', self.resource_name])
 
     def update(self) -> None:
-        self.run(['add', '-remove-files', '-force-replace', self.name, self.package_directory])
+        self.run(['add', '-remove-files', '-force-replace', self.resource_name, self.package_directory])

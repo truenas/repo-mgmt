@@ -63,7 +63,7 @@ def main() -> None:
         clean_mirrors()
     elif args.action == 'clean_repositories':
         clean_repositories()
-    if args.action == 'validate':
+    elif args.action == 'validate':
         validate(args.system_state, args.manifest)
     elif args.action == 'create_mirrors':
         validate()

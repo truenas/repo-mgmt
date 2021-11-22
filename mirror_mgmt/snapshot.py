@@ -2,7 +2,7 @@ import logging
 
 from datetime import datetime
 
-from .list import get_manifest_mirrors
+from .list import get_manifest_mirrors, get_manifest_repositories
 from .utils.manifest import get_manifest
 
 
@@ -39,7 +39,7 @@ def publish_snapshots_of_mirrors(snapshots: list) -> None:
 
 
 def create_snapshots_of_repositories(snapshot_suffix: str) -> list:
-    return common_create_snapshots(get_manifest_mirrors(), 'repository', snapshot_suffix)
+    return common_create_snapshots(get_manifest_repositories(), 'repository', snapshot_suffix)
 
 
 def publish_snapshots_of_repositories(snapshots: list) -> None:
