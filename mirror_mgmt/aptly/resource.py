@@ -34,3 +34,7 @@ class Resource:
 
     def update(self) -> None:
         raise NotImplementedError
+
+
+def clean_database():
+    aptly_run(['db', 'cleanup'])

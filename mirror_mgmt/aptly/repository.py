@@ -6,6 +6,7 @@ from typing import Optional
 from typing_extensions import ParamSpec
 
 from .resource import Resource
+from .run import aptly_run
 from .snapshot import Snapshot
 
 P = ParamSpec('P')
@@ -23,6 +24,9 @@ class RepositoryBase(Resource):
 
         snap.create()
         return snap
+
+    def drop(self):
+        self.run(['drop', '-force', self.resource_name])
 
 
 class Repository(RepositoryBase):

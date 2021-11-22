@@ -17,6 +17,12 @@ ifneq ($(REPO_CHANGED),0)
 endif
 
 
+clean-mirrors: check
+	. ./venv-${COMMIT_HASH}/bin/activate && mirror_mgmt clean_mirrors
+
+clean-repositories: check
+	. ./venv-${COMMIT_HASH}/bin/activate && mirror_mgmt clean_repositories
+
 update-mirrors: check
 	. ./venv-${COMMIT_HASH}/bin/activate && mirror_mgmt update_mirrors
 	. ./venv-${COMMIT_HASH}/bin/activate && mirror_mgmt create_mirrors_snapshots $(args)

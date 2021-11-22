@@ -3,6 +3,7 @@ import coloredlogs
 import logging
 import sys
 
+from .clean import clean_mirrors, clean_repositories
 from .create import create_mirrors, create_repositories
 from .snapshot import (
     create_snapshots_of_mirrors, create_snapshots_of_repositories,
@@ -33,6 +34,9 @@ def main() -> None:
 
     for object_singular, object_plural in (('mirror', 'mirrors'), ('repository', 'repositories')):
         subparsers.add_parser(
+            f'clean_{object_plural}', help=f'Drop {object_plural} from the configuration provided'
+        )
+        subparsers.add_parser(
             f'create_{object_plural}', help=f'fCreate new {object_plural} from the configuration provided'
         )
         subparsers.add_parser(f'update_{object_plural}', help=f'Update {object_plural} specified in the manifest')
@@ -55,6 +59,10 @@ def main() -> None:
         validate_parser.set_defaults(**{action: True})
 
     args = parser.parse_args()
+    if args.action == 'clean_mirrors':
+        clean_mirrors()
+    elif args.action == 'clean_repositories':
+        clean_repositories()
     if args.action == 'validate':
         validate(args.system_state, args.manifest)
     elif args.action == 'create_mirrors':
