@@ -12,7 +12,7 @@ pipeline {
     }
     stage('Sync') {
       steps {
-        sh 'make update-truenas'
+        sh 'make update-repositories-without-backup'
       }
     }
   }
