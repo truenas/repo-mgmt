@@ -9,12 +9,12 @@ logger = logging.getLogger(__name__)
 def common_update(repo_mirrors: list, object_type: str):
     for repo_mirror in repo_mirrors:
         if not repo_mirror.exists:
-            logger.info('Creating %r %s', repo_mirror.name, object_type)
+            logger.info('Creating %r %s', repo_mirror.resource_name, object_type)
             repo_mirror.create()
 
-        logger.info('Updating %r %s', repo_mirror.name, object_type)
+        logger.info('Updating %r %s', repo_mirror.resource_name, object_type)
         repo_mirror.update()
-        logger.info('Updated %r %s', repo_mirror.name, object_type)
+        logger.info('Updated %r %s', repo_mirror.resource_name, object_type)
 
 
 def update_mirrors() -> None:

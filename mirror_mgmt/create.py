@@ -9,10 +9,10 @@ logger = logging.getLogger(__name__)
 def common_create(repo_mirrors: list, object_type: str) -> None:
     for repo_mirror in repo_mirrors:
         if repo_mirror.exists:
-            logger.info('%r already exists, skipping creating it', repo_mirror.name)
+            logger.info('%r already exists, skipping creating it', repo_mirror.resource_name)
         else:
             repo_mirror.create()
-            logger.info('Successfully created %r %s', repo_mirror.name, object_type)
+            logger.info('Successfully created %r %s', repo_mirror.resource_name, object_type)
 
 
 def create_mirrors() -> None:
