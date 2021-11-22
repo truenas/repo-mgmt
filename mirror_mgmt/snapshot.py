@@ -1,9 +1,11 @@
 import logging
+import time
 
 from datetime import datetime
 
 from .list import get_manifest_mirrors, get_manifest_repositories
 from .utils.manifest import get_manifest
+from .utils.zfs import zfs_snapshot
 
 
 logger = logging.getLogger(__name__)
@@ -44,3 +46,7 @@ def create_snapshots_of_repositories(snapshot_suffix: str) -> list:
 
 def publish_snapshots_of_repositories(snapshots: list) -> None:
     common_publish_snapshots(snapshots, 'repository')
+
+
+def backup_aptly_dataset() -> None:
+    zfs_snapshot(get_manifest()['aptly_dataset'], f'backup_aptly_dataset_{int(time.time())}')

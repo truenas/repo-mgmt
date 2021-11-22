@@ -6,7 +6,7 @@ import sys
 from .clean import clean_mirrors, clean_repositories
 from .create import create_mirrors, create_repositories
 from .snapshot import (
-    create_snapshots_of_mirrors, create_snapshots_of_repositories,
+    backup_aptly_dataset, create_snapshots_of_mirrors, create_snapshots_of_repositories,
     publish_snapshots_of_mirrors, publish_snapshots_of_repositories,
 )
 from .update import update_mirrors, update_repositories
@@ -50,6 +50,7 @@ def main() -> None:
             '--publish-snapshot', '-ps', help='Publish snapshot', default=False, action='store_true'
         )
 
+    subparsers.add_parser('backup', help='Backup aptly mirror dataset')
     validate_parser = subparsers.add_parser(
         'validate', help='Validate TrueNAS Scale mirror management manifest and system state'
     )
@@ -59,7 +60,9 @@ def main() -> None:
         validate_parser.set_defaults(**{action: True})
 
     args = parser.parse_args()
-    if args.action == 'clean_mirrors':
+    if args.action == 'backup':
+        backup_aptly_dataset()
+    elif args.action == 'clean_mirrors':
         clean_mirrors()
     elif args.action == 'clean_repositories':
         clean_repositories()

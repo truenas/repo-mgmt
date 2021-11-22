@@ -2,6 +2,7 @@
 "gpg_key": "20998A97"
 "publish_prefix_default": "stable"
 "release": "angelfish"
+"aptly_dataset": "z/srv"
 "mirrors":
   - "component": ""
     "distribution": "bullseye"

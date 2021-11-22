@@ -1,7 +1,6 @@
 import logging
 
 from .list import get_manifest_mirrors, get_manifest_repositories
-from .utils.manifest import get_manifest
 
 
 logger = logging.getLogger(__name__)
@@ -17,9 +16,7 @@ def common_create(repo_mirrors: list, object_type: str) -> None:
 
 
 def create_mirrors() -> None:
-    manifest = get_manifest()
     logger.debug('Creating mirrors')
-    logger.debug('Defined mirror suffix is %r', manifest['mirror_suffix'])
     common_create(get_manifest_mirrors(), 'mirror')
 
 

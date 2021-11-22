@@ -12,8 +12,8 @@ MANIFEST_SCHEMA = {
     'properties': {
         'release': {'type': 'string'},
         'gpg_key': {'type': 'string'},
+        'aptly_dataset': {'type': 'string'},
         'publish_prefix_default': {'type': 'string'},
-        'mirror_suffix': {'type': 'string'},
         'mirrors': {
             'type': 'array',
             'items': [{
@@ -56,6 +56,8 @@ MANIFEST_SCHEMA = {
         'gpg_key',
         'publish_prefix_default',
         'mirrors',
+        'aptly_dataset',
+        'repositories',
     ],
 }
 

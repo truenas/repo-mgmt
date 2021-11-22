@@ -8,4 +8,4 @@ def get_manifest_mirrors() -> list:
 
 
 def get_manifest_repositories() -> list:
-    return [Repository(**r) for r in get_manifest().get('repositories', [])]
+    return [Repository(**r) for r in get_manifest()['repositories']]
