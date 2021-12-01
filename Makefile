@@ -1,43 +1,48 @@
 #!/usr/bin/make -f
+PYTHON?=/usr/bin/python3
+COMMIT_HASH=$(shell git rev-parse --short HEAD)
+REPO_CHANGED=$(shell if [ -d "./venv-$(COMMIT_HASH)" ]; then git status --porcelain | grep -c "mirror_mgmt/"; else echo "1"; fi)
+SNAPSHOT_SUFFIX := $(or ${SNAPSHOT_SUFFIX}, devel)
 
-update-debian:
-	sh build.sh debmirror
+.DEFAULT_GOAL := all
 
-update-debian-sid:
-	sh build.sh debmirror-sid
+check:
+ifneq ($(REPO_CHANGED),0)
+	@echo "Setting up new virtual environment"
+	@rm -rf venv-*
+	@${PYTHON} -m pip install -U virtualenv >/dev/null 2>&1 || { echo "Failed to install/upgrade virtualenv package"; exit 1; }
+	@${PYTHON} -m venv venv-${COMMIT_HASH} || { echo "Failed to create virutal environment"; exit 1; }
+	@{ . ./venv-${COMMIT_HASH}/bin/activate && \
+		python3 -m pip install -r requirements.txt >/dev/null 2>&1 && \
+		python3 setup.py install >/dev/null 2>&1; } || { echo "Failed to install mirror-mgmt"; exit 1; }
+endif
 
-update-truenas:
-	sh build.sh truenasmirror
 
-update-docker:
-	sh build.sh docker
+clean-mirrors: check
+	. ./venv-${COMMIT_HASH}/bin/activate && mirror_mgmt clean_mirrors
 
-update-gluster:
-	sh build.sh gluster
+clean-repositories: check
+	. ./venv-${COMMIT_HASH}/bin/activate && mirror_mgmt clean_repositories
 
-update-kubernetes:
-	sh build.sh kubernetes
+clean: check clean-mirrors clean-repositories
 
-update-helm:
-	sh build.sh helm
+backup: check
+	. ./venv-${COMMIT_HASH}/bin/activate && mirror_mgmt backup
 
-update-nvidia-docker:
-	sh build.sh nvidia-docker
+update-mirrors-without-backup: check
+	. ./venv-${COMMIT_HASH}/bin/activate && mirror_mgmt update_mirrors
+	. ./venv-${COMMIT_HASH}/bin/activate && mirror_mgmt create_mirrors_snapshots -ps --snapshot-suffix=${SNAPSHOT_SUFFIX}
 
-update-mirrors: update-debian update-docker update-gluster update-kubernetes update-nvidia-docker update-helm
+update-repositories-without-backup: check
+	. ./venv-${COMMIT_HASH}/bin/activate && mirror_mgmt update_repositories
+	. ./venv-${COMMIT_HASH}/bin/activate && mirror_mgmt create_repositories_snapshots -ps --snapshot-suffix=${SNAPSHOT_SUFFIX}
 
-push-repo:
-	sh build.sh push-repo
+validate_manifest: check
+	. ./venv-${COMMIT_HASH}/bin/activate && mirror_mgmt validate --no-validate-system_state
+
+update-mirrors: backup update-mirrors-without-backup
+
+update-repositories: backup update-repositories-without-backup
 
 # Sync and build all
-all:
-	echo "Available targets:"
-	echo "update-debian     - Sync with upstream Debian repository"
-	echo "update-docker     - Sync with upstream Docker repository"
-	echo "update-gluster    - Sync with upstream Gluster repository"
-	echo "update-kubernetes - Sync with upstream Kubernetes repository"
-	echo "update-helm       - Sync with upstream helm repository"
-	echo "update-nvidia-docker - Sync with upstream nvidia-docker repository"
-	echo "update-truenas    - Update TrueNAS repo with local package directory"
-	echo "push-repo         - Push merged repo to staging CDN"
-	exit 1
+all: backup update-mirrors-without-backup update-repositories-without-backup
