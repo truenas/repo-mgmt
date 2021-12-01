@@ -22,9 +22,9 @@ def common_create_snapshots(repo_mirrors: list, object_type: str, snapshot_suffi
 
 
 def common_publish_snapshots(snapshots: list, object_type: str) -> None:
-    logger.info('Publishing snapshots...')
+    logger.debug('Publishing snapshots...')
     for snapshot in snapshots:
-        logger.debug(
+        logger.info(
             'Publishing %r snapshot of %r %s using endpoint %r', snapshot.name,
             snapshot.parent_resource.resource_name, object_type, snapshot.endpoint
         )

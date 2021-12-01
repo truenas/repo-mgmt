@@ -19,6 +19,7 @@ class RepositoryBase(Resource):
             publish_prefix_override=self.publish_prefix_override,
         )
         if snap.exists:
+            snap.drop_published_snapshot()
             snap.delete()
 
         snap.create()

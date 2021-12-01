@@ -51,7 +51,7 @@ class Snapshot(Resource):
             raise CallError('Distribution must be specified when publishing snapshot')
 
         aptly_run([
-            'publish', 'snapshot', f'-distribution="{self.snap_distribution}"', f'-gpg-key={gpg_key}',
+            'publish', 'snapshot', f'-distribution={self.snap_distribution}', f'-gpg-key={gpg_key}',
             self.resource_name, self.endpoint,
         ])
 
