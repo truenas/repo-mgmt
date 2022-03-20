@@ -21,10 +21,7 @@ endif
 clean-mirrors: check
 	. ./venv-${COMMIT_HASH}/bin/activate && mirror_mgmt clean_mirrors
 
-clean-repositories: check
-	. ./venv-${COMMIT_HASH}/bin/activate && mirror_mgmt clean_repositories
-
-clean: check clean-mirrors clean-repositories
+clean: check clean-mirrors
 
 backup: check
 	. ./venv-${COMMIT_HASH}/bin/activate && mirror_mgmt backup
