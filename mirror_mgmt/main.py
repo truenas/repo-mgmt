@@ -4,12 +4,12 @@ import logging
 import sys
 
 from .clean import clean_mirrors, clean_repositories
-from .create import create_mirrors, create_repositories
+from .create import create_mirrors
 from .snapshot import (
     backup_aptly_dataset, create_snapshots_of_mirrors, create_snapshots_of_repositories,
     publish_snapshots_of_mirrors, publish_snapshots_of_repositories,
 )
-from .update import update_mirrors, update_repositories
+from .update import update_mirrors
 from .validate import validate
 
 
@@ -71,24 +71,13 @@ def main() -> None:
     elif args.action == 'create_mirrors':
         validate()
         create_mirrors()
-    elif args.action == 'create_repositories':
-        validate()
-        create_repositories()
     elif args.action == 'update_mirrors':
         validate()
         update_mirrors()
-    elif args.action == 'update_repositories':
-        validate()
-        update_repositories()
     elif args.action == 'create_mirrors_snapshots':
         validate()
         snapshots = create_snapshots_of_mirrors(args.snapshot_suffix)
         if args.publish_snapshot:
             publish_snapshots_of_mirrors(snapshots)
-    elif args.action == 'create_repositories_snapshots':
-        validate()
-        snapshots = create_snapshots_of_repositories(args.snapshot_suffix)
-        if args.publish_snapshot:
-            publish_snapshots_of_repositories(snapshots)
     else:
         parser.print_help()

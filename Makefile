@@ -33,16 +33,10 @@ update-mirrors-without-backup: check
 	. ./venv-${COMMIT_HASH}/bin/activate && mirror_mgmt update_mirrors
 	. ./venv-${COMMIT_HASH}/bin/activate && mirror_mgmt create_mirrors_snapshots -ps --snapshot-suffix=${SNAPSHOT_SUFFIX}
 
-update-repositories-without-backup: check
-	. ./venv-${COMMIT_HASH}/bin/activate && mirror_mgmt update_repositories
-	. ./venv-${COMMIT_HASH}/bin/activate && mirror_mgmt create_repositories_snapshots -ps --snapshot-suffix=${SNAPSHOT_SUFFIX}
-
 validate_manifest: check
 	. ./venv-${COMMIT_HASH}/bin/activate && mirror_mgmt validate --no-validate-system_state
 
 update-mirrors: backup update-mirrors-without-backup
 
-update-repositories: backup update-repositories-without-backup
-
 # Sync and build all
-all: backup update-mirrors-without-backup update-repositories-without-backup
+all: backup update-mirrors-without-backup
