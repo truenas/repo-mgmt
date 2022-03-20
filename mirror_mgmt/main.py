@@ -3,7 +3,7 @@ import coloredlogs
 import logging
 import sys
 
-from .clean import clean_mirrors, clean_repositories
+from .clean import clean_mirrors
 from .create import create_mirrors
 from .snapshot import (
     backup_aptly_dataset, create_snapshots_of_mirrors, publish_snapshots_of_mirrors,
@@ -60,8 +60,6 @@ def main() -> None:
         backup_aptly_dataset()
     elif args.action == 'clean_mirrors':
         clean_mirrors()
-    elif args.action == 'clean_repositories':
-        clean_repositories()
     elif args.action == 'validate':
         validate(args.system_state, args.manifest)
     elif args.action == 'create_mirrors':
