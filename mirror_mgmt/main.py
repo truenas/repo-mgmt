@@ -31,23 +31,20 @@ def main() -> None:
     parser = argparse.ArgumentParser(prog='mirror_mgmt')
     subparsers = parser.add_subparsers(help='sub-command help', dest='action')
 
-    for object_singular, object_plural in (('mirror', 'mirrors'), ('repository', 'repositories')):
-        subparsers.add_parser(
-            f'clean_{object_plural}', help=f'Drop {object_plural} from the configuration provided'
-        )
-        subparsers.add_parser(
-            f'create_{object_plural}', help=f'fCreate new {object_plural} from the configuration provided'
-        )
-        subparsers.add_parser(f'update_{object_plural}', help=f'Update {object_plural} specified in the manifest')
-        snapshot_parser = subparsers.add_parser(
-            f'create_{object_plural}_snapshots', help=f'Create snapshots of {object_plural} specified in the manifest'
-        )
-        snapshot_parser.add_argument(
-            '--snapshot-suffix', help=f'Specify suffix to use for creating snapshot from {object_singular}'
-        )
-        snapshot_parser.add_argument(
-            '--publish-snapshot', '-ps', help='Publish snapshot', default=False, action='store_true'
-        )
+    subparsers.add_parser('clean_mirrors', help='Drop mirrors from the configuration provided')
+    subparsers.add_parser(
+        'create_mirrors', help='fCreate new mirrors from the configuration provided'
+    )
+    subparsers.add_parser('update_mirrors', help='Update mirrors specified in the manifest')
+    snapshot_parser = subparsers.add_parser(
+        'create_mirrors_snapshots', help='Create snapshots of mirrors specified in the manifest'
+    )
+    snapshot_parser.add_argument(
+        '--snapshot-suffix', help='Specify suffix to use for creating snapshot from mirror'
+    )
+    snapshot_parser.add_argument(
+        '--publish-snapshot', '-ps', help='Publish snapshot', default=False, action='store_true'
+    )
 
     subparsers.add_parser('backup', help='Backup aptly mirror dataset')
     validate_parser = subparsers.add_parser(
