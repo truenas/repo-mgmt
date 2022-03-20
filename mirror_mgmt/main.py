@@ -6,8 +6,7 @@ import sys
 from .clean import clean_mirrors, clean_repositories
 from .create import create_mirrors
 from .snapshot import (
-    backup_aptly_dataset, create_snapshots_of_mirrors, create_snapshots_of_repositories,
-    publish_snapshots_of_mirrors, publish_snapshots_of_repositories,
+    backup_aptly_dataset, create_snapshots_of_mirrors, publish_snapshots_of_mirrors,
 )
 from .update import update_mirrors
 from .validate import validate
