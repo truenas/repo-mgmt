@@ -2,14 +2,16 @@ import subprocess
 
 from mirror_mgmt.exceptions import CallError
 
+from typing import Optional
 from typing_extensions import ParamSpec
 
-from .repository import RepositoryBase
+from .resource import Resource
+from .snapshot import Snapshot
 
 P = ParamSpec('P')
 
 
-class Mirror(RepositoryBase):
+class Mirror(Resource):
 
     RESOURCE_NAME = 'mirror'
 
@@ -20,6 +22,21 @@ class Mirror(RepositoryBase):
         self.extra_options = kwargs.get('extra_options', [])
         self.filter = kwargs.get('filter')
         self.gpg_key = kwargs.get('gpg_key')
+
+    def create_snapshot(self, snapshot_name: Optional[str] = None) -> Snapshot:
+        snap = Snapshot(
+            snapshot_name, self, distribution=self.distribution,
+            publish_prefix_override=self.publish_prefix_override,
+        )
+        if snap.exists:
+            snap.drop_published_snapshot()
+            snap.delete()
+
+        snap.create()
+        return snap
+
+    def drop(self):
+        self.run(['drop', '-force', self.resource_name])
 
     def create(self) -> subprocess.CompletedProcess:
         missing = [k for k in ('repository', 'distribution', 'name') if not getattr(self, k)]
