@@ -1,5 +1,4 @@
 from .aptly.mirror import Mirror
-from .aptly.repository import Repository
 from .utils.manifest import get_manifest
 
 
