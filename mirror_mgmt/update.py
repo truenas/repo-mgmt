@@ -1,27 +1,18 @@
 import logging
 
-from .list import get_manifest_mirrors, get_manifest_repositories
+from .list import get_manifest_mirrors
 
 
 logger = logging.getLogger(__name__)
 
 
-def common_update(repo_mirrors: list, object_type: str):
-    for repo_mirror in repo_mirrors:
-        if not repo_mirror.exists:
-            logger.info('Creating %r %s', repo_mirror.resource_name, object_type)
-            repo_mirror.create()
-
-        logger.info('Updating %r %s', repo_mirror.resource_name, object_type)
-        repo_mirror.update()
-        logger.info('Updated %r %s', repo_mirror.resource_name, object_type)
-
-
 def update_mirrors() -> None:
     logger.debug('Updating mirrors')
-    common_update(get_manifest_mirrors(), 'mirror')
+    for mirror in get_manifest_mirrors():
+        if not mirror.exists:
+            logger.info('Creating %r mirror', mirror.resource_name)
+            mirror.create()
 
-
-def update_repositories() -> None:
-    logger.debug('Updating repositories')
-    common_update(get_manifest_repositories(), 'repository')
+        logger.info('Updating %r mirror', mirror.resource_name)
+        mirror.update()
+        logger.info('Updated %r mirror', mirror.resource_name)
