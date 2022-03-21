@@ -33,22 +33,6 @@ MANIFEST_SCHEMA = {
                 },
                 'required': ['name', 'url', 'distribution', 'component']
             }],
-            'repositories': {
-                'type': 'array',
-                'items': [{
-                    'type': 'object',
-                    'items': [{
-                        'type': 'object',
-                        'properties': {
-                            'name': {'type': 'string'},
-                            'distribution': {'type': 'string'},
-                            'package_directory': {'type': 'string'},
-                            'publish_prefix_override': {'type': 'string'},
-                        },
-                        'required': ['name', 'distribution', 'package_directory'],
-                    }]
-                }]
-            },
         },
     },
     'required': [
@@ -57,7 +41,6 @@ MANIFEST_SCHEMA = {
         'publish_prefix_default',
         'mirrors',
         'aptly_dataset',
-        'repositories',
     ],
 }
 

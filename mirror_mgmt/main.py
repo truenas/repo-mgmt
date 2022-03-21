@@ -3,13 +3,12 @@ import coloredlogs
 import logging
 import sys
 
-from .clean import clean_mirrors, clean_repositories
-from .create import create_mirrors, create_repositories
+from .clean import clean_mirrors
+from .create import create_mirrors
 from .snapshot import (
-    backup_aptly_dataset, create_snapshots_of_mirrors, create_snapshots_of_repositories,
-    publish_snapshots_of_mirrors, publish_snapshots_of_repositories,
+    backup_aptly_dataset, create_snapshots_of_mirrors, publish_snapshots_of_mirrors,
 )
-from .update import update_mirrors, update_repositories
+from .update import update_mirrors
 from .validate import validate
 
 
@@ -32,23 +31,20 @@ def main() -> None:
     parser = argparse.ArgumentParser(prog='mirror_mgmt')
     subparsers = parser.add_subparsers(help='sub-command help', dest='action')
 
-    for object_singular, object_plural in (('mirror', 'mirrors'), ('repository', 'repositories')):
-        subparsers.add_parser(
-            f'clean_{object_plural}', help=f'Drop {object_plural} from the configuration provided'
-        )
-        subparsers.add_parser(
-            f'create_{object_plural}', help=f'fCreate new {object_plural} from the configuration provided'
-        )
-        subparsers.add_parser(f'update_{object_plural}', help=f'Update {object_plural} specified in the manifest')
-        snapshot_parser = subparsers.add_parser(
-            f'create_{object_plural}_snapshots', help=f'Create snapshots of {object_plural} specified in the manifest'
-        )
-        snapshot_parser.add_argument(
-            '--snapshot-suffix', help=f'Specify suffix to use for creating snapshot from {object_singular}'
-        )
-        snapshot_parser.add_argument(
-            '--publish-snapshot', '-ps', help='Publish snapshot', default=False, action='store_true'
-        )
+    subparsers.add_parser('clean_mirrors', help='Drop mirrors from the configuration provided')
+    subparsers.add_parser(
+        'create_mirrors', help='fCreate new mirrors from the configuration provided'
+    )
+    subparsers.add_parser('update_mirrors', help='Update mirrors specified in the manifest')
+    snapshot_parser = subparsers.add_parser(
+        'create_mirrors_snapshots', help='Create snapshots of mirrors specified in the manifest'
+    )
+    snapshot_parser.add_argument(
+        '--snapshot-suffix', help='Specify suffix to use for creating snapshot from mirror'
+    )
+    snapshot_parser.add_argument(
+        '--publish-snapshot', '-ps', help='Publish snapshot', default=False, action='store_true'
+    )
 
     subparsers.add_parser('backup', help='Backup aptly mirror dataset')
     validate_parser = subparsers.add_parser(
@@ -64,31 +60,18 @@ def main() -> None:
         backup_aptly_dataset()
     elif args.action == 'clean_mirrors':
         clean_mirrors()
-    elif args.action == 'clean_repositories':
-        clean_repositories()
     elif args.action == 'validate':
         validate(args.system_state, args.manifest)
     elif args.action == 'create_mirrors':
         validate()
         create_mirrors()
-    elif args.action == 'create_repositories':
-        validate()
-        create_repositories()
     elif args.action == 'update_mirrors':
         validate()
         update_mirrors()
-    elif args.action == 'update_repositories':
-        validate()
-        update_repositories()
     elif args.action == 'create_mirrors_snapshots':
         validate()
         snapshots = create_snapshots_of_mirrors(args.snapshot_suffix)
         if args.publish_snapshot:
             publish_snapshots_of_mirrors(snapshots)
-    elif args.action == 'create_repositories_snapshots':
-        validate()
-        snapshots = create_snapshots_of_repositories(args.snapshot_suffix)
-        if args.publish_snapshot:
-            publish_snapshots_of_repositories(snapshots)
     else:
         parser.print_help()
