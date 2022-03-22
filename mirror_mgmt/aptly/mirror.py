@@ -18,7 +18,7 @@ class Mirror(Resource):
     def __init__(self, name: str, **kwargs: P.kwargs):
         super().__init__(name, **kwargs)
         self.repository = kwargs.get('url')
-        self.component = kwargs.get('component')
+        self.component = kwargs.get('component', [])
         self.extra_options = kwargs.get('extra_options', [])
         self.filter = kwargs.get('filter')
         self.gpg_key = kwargs.get('gpg_key')
@@ -54,8 +54,8 @@ class Mirror(Resource):
 
         return self.run(list(filter(
             bool, ['create'] + (self.extra_options or []) + ([f'-filter={self.filter}'] if self.filter else []) + [
-                self.resource_name, self.repository, self.distribution, self.component,
-            ]
+                self.resource_name, self.repository, self.distribution,
+            ] + self.component
         )))
 
     def update(self) -> None:
