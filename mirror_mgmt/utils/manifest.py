@@ -24,7 +24,10 @@ MANIFEST_SCHEMA = {
                     'distribution': {'type': 'string'},
                     'gpg_key': {'type': 'string'},
                     'publish_prefix_override': {'type': 'string'},
-                    'component': {'type': 'string'},
+                    'component': {
+                        'type': 'array',
+                        'items': [{'type': 'string'}]
+                    },
                     'filter': {'type': 'string'},
                     'extra_options': {
                         'type': 'array',
