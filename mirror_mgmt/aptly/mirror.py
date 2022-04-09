@@ -1,3 +1,4 @@
+import re
 import subprocess
 
 from mirror_mgmt.exceptions import CallError
@@ -9,6 +10,7 @@ from .resource import Resource
 from .snapshot import Snapshot
 
 P = ParamSpec('P')
+RE_URI = re.compile(r'Archive Root URL:\s*(.*)')
 
 
 class Mirror(Resource):
@@ -60,3 +62,11 @@ class Mirror(Resource):
 
     def update(self) -> None:
         self.run(['update', self.resource_name])
+
+    def needs_to_be_created(self) -> bool:
+        show_details = self.run(['show', self.resource_name], check=False, log=False)
+        if show_details.returncode != 0:
+            return True
+
+        repository = RE_URI.findall(show_details.stdout.decode(errors='ignore'))
+        return not repository or repository[0] != self.repository

@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 def update_mirrors() -> None:
     logger.debug('Updating mirrors')
     for mirror in get_manifest_mirrors():
-        if not mirror.exists:
+        if not mirror.needs_to_be_created():
             logger.info('Creating %r mirror', mirror.resource_name)
             mirror.create()
 
