@@ -10,6 +10,10 @@ def update_mirrors() -> None:
     logger.debug('Updating mirrors')
     for mirror in get_manifest_mirrors():
         if not mirror.needs_to_be_created():
+            if mirror.exists:
+                logger.info('Removing %r mirror as it needs to be re-created', mirror.resource_name)
+                mirror.drop()
+
             logger.info('Creating %r mirror', mirror.resource_name)
             mirror.create()
 
