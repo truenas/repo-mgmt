@@ -39,7 +39,9 @@ class Snapshot(Resource):
             self.parent_resource.RESOURCE_NAME, self.parent_resource.resource_name
         ])
 
-    def delete(self) -> None:
+    def delete(self, remove_published_snapshot: bool = True) -> None:
+        if remove_published_snapshot:
+            self.drop_published_snapshot()
         self.run(['drop', self.resource_name], log=False)
 
     @property
