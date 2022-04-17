@@ -8,6 +8,7 @@ from typing_extensions import ParamSpec
 
 from .resource import Resource
 from .snapshot import Snapshot
+from .utils import get_all_snapshots
 
 P = ParamSpec('P')
 RE_URI = re.compile(r'Archive Root URL:\s*(.*)')
@@ -26,10 +27,7 @@ class Mirror(Resource):
         self.gpg_key = kwargs.get('gpg_key')
 
     def create_snapshot(self, snapshot_name: Optional[str] = None) -> Snapshot:
-        snap = Snapshot(
-            snapshot_name, self, distribution=self.distribution,
-            publish_prefix_override=self.publish_prefix_override,
-        )
+        snap = self.get_snap_object(snapshot_name)
         if snap.exists:
             snap.drop_published_snapshot()
             snap.delete()
@@ -39,6 +37,11 @@ class Mirror(Resource):
 
     def drop(self):
         self.run(['drop', '-force', self.resource_name])
+
+    def get_snap_object(self, snapshot_name: str) -> Snapshot:
+        return Snapshot(
+            snapshot_name, self, distribution=self.distribution, publish_prefix_override=self.publish_prefix_override,
+        )
 
     def create(self) -> subprocess.CompletedProcess:
         missing = [k for k in ('repository', 'distribution', 'name') if not getattr(self, k)]
@@ -70,3 +73,11 @@ class Mirror(Resource):
 
         repository = RE_URI.findall(show_details.stdout)
         return not repository or repository[0].rstrip('/') != self.repository
+
+    def get_snapshots(self) -> list:
+        return [
+            self.get_snap_object(snapshot_name)
+            for snapshot_name in re.findall(
+                fr'.*\[(.*)\].* Snapshot from mirror\s*\[{self.resource_name}\].*', get_all_snapshots()
+            )
+        ]
