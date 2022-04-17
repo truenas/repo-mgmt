@@ -29,7 +29,6 @@ class Mirror(Resource):
     def create_snapshot(self, snapshot_name: Optional[str] = None) -> Snapshot:
         snap = self.get_snap_object(snapshot_name)
         if snap.exists:
-            snap.drop_published_snapshot()
             snap.delete()
 
         snap.create()
