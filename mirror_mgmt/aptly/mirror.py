@@ -68,5 +68,5 @@ class Mirror(Resource):
         if show_details.returncode != 0:
             return True
 
-        repository = RE_URI.findall(show_details.stdout.decode(errors='ignore'))
-        return not repository or repository[0] != self.repository
+        repository = RE_URI.findall(show_details.stdout)
+        return not repository or repository[0].rstrip('/') != self.repository
