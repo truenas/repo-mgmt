@@ -35,5 +35,8 @@ validate_manifest: check
 
 update-mirrors: backup update-mirrors-without-backup
 
+publish: backup
+	. ./venv-${COMMIT_HASH}/bin/activate && mirror_mgmt create_mirrors_snapshots -ps --snapshot-suffix=${SNAPSHOT_SUFFIX}
+
 # Sync and build all
 all: backup update-mirrors-without-backup
