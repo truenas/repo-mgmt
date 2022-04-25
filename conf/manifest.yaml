@@ -1,6 +1,6 @@
 ---
 "gpg_key": "20998A97"
-"publish_prefix_default": "angelfish/nightlies"
+"publish_prefix_default": "angelfish/22.02.1"
 "release": "angelfish"
 "aptly_dataset": "z/srv"
 "mirrors":
