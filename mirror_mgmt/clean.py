@@ -2,7 +2,8 @@ import logging
 
 from .aptly.mirror import Mirror
 from .aptly.resource import clean_database
-from .list import get_manifest_mirrors
+from .list import get_manifest_mirrors, get_snapshots
+from .clean_utils import remove_dangling_snapshots
 
 
 logger = logging.getLogger(__name__)
@@ -34,3 +35,8 @@ def clean_mirrors() -> None:
     logger.info('Cleaning aptly database')
     clean_database()
     logger.info('Successfully cleaned aptly database')
+
+
+def clean_dangling_snapshots() -> None:
+    logger.debug('Cleaning dangling snapshots')
+    remove_dangling_snapshots(get_snapshots())
