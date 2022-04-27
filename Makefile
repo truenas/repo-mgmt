@@ -23,6 +23,9 @@ clean-mirrors: check
 
 clean: check clean-mirrors
 
+clean-dangling-snapshots: check
+	. ./venv-${COMMIT_HASH}/bin/activate && mirror_mgmt clean_dangling
+
 backup: check
 	. ./venv-${COMMIT_HASH}/bin/activate && mirror_mgmt backup
 
