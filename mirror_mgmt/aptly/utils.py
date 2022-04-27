@@ -13,9 +13,9 @@ def get_all_published_snapshots() -> str:
 
 def snapshot_is_published(snap_name: str, published_snapshots: str) -> bool:
     return bool(
-        re.findall(fr'publishes\s*\{{.*:\s*\[{snap_name}\]:\s*Snapshot from mirror.*', published_snapshots)
+        re.findall(fr'publishes\s*\{{.*:\s*\[{snap_name}\]:\s*Snapshot from.*', published_snapshots)
     )
 
 
-def drop_snapshot(snap_name: str):
+def drop_snapshot(snap_name: str) -> None:
     aptly_run(['snapshot', 'drop', snap_name], log=False)
