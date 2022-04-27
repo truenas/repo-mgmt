@@ -7,6 +7,7 @@ from typing_extensions import ParamSpec
 
 from .resource import Resource
 from .run import aptly_run
+from .utils import get_all_published_snapshots, snapshot_is_published
 
 P = ParamSpec('P')
 
@@ -62,3 +63,6 @@ class Snapshot(Resource):
             raise CallError('Distribution must be specified when removing published snapshot')
 
         aptly_run(['publish', 'drop', self.snap_distribution, self.endpoint], check=False, log=False)
+
+    def is_published(self, published_snaps: str = None) -> bool:
+        return snapshot_is_published(self.resource_name, published_snaps or get_all_published_snapshots())

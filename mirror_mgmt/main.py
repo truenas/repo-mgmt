@@ -3,7 +3,7 @@ import coloredlogs
 import logging
 import sys
 
-from .clean import clean_mirrors
+from .clean import clean_dangling_snapshots, clean_mirrors
 from .create import create_mirrors
 from .snapshot import (
     backup_aptly_dataset, create_snapshots_of_mirrors, publish_snapshots_of_mirrors,
@@ -32,6 +32,7 @@ def main() -> None:
     subparsers = parser.add_subparsers(help='sub-command help', dest='action')
 
     subparsers.add_parser('clean_mirrors', help='Drop mirrors from the configuration provided')
+    subparsers.add_parser('clean_dangling', help='Drop unpublished aptly snapshots from the configuration provided')
     subparsers.add_parser(
         'create_mirrors', help='fCreate new mirrors from the configuration provided'
     )
@@ -60,6 +61,8 @@ def main() -> None:
         backup_aptly_dataset()
     elif args.action == 'clean_mirrors':
         clean_mirrors()
+    elif args.action == 'clean_dangling':
+        clean_dangling_snapshots()
     elif args.action == 'validate':
         validate(args.system_state, args.manifest)
     elif args.action == 'create_mirrors':
