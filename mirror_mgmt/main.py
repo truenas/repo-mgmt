@@ -71,10 +71,12 @@ def main() -> None:
     elif args.action == 'update_mirrors':
         validate()
         update_mirrors()
+        clean_dangling_snapshots()
     elif args.action == 'create_mirrors_snapshots':
         validate()
         snapshots = create_snapshots_of_mirrors(args.snapshot_suffix)
         if args.publish_snapshot:
             publish_snapshots_of_mirrors(snapshots)
+        clean_dangling_snapshots()
     else:
         parser.print_help()
