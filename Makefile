@@ -3,6 +3,7 @@ PYTHON?=/usr/bin/python3
 COMMIT_HASH=$(shell git rev-parse --short HEAD)
 REPO_CHANGED=$(shell if [ -d "./venv-$(COMMIT_HASH)" ]; then git status --porcelain | grep -c "mirror_mgmt/"; else echo "1"; fi)
 SNAPSHOT_SUFFIX := $(or ${SNAPSHOT_SUFFIX}, devel)
+UPDATE_ARGS = ""
 
 .DEFAULT_GOAL := all
 
@@ -30,7 +31,11 @@ backup: check
 	. ./venv-${COMMIT_HASH}/bin/activate && mirror_mgmt backup
 
 update-mirrors-without-backup: check
+ifeq ($(UPDATE_ARGS),""))
 	. ./venv-${COMMIT_HASH}/bin/activate && mirror_mgmt update_mirrors
+else
+	. ./venv-${COMMIT_HASH}/bin/activate && mirror_mgmt update_mirrors --update-mirrors=${UPDATE_ARGS}
+endif
 	. ./venv-${COMMIT_HASH}/bin/activate && mirror_mgmt create_mirrors_snapshots -ps --snapshot-suffix=${SNAPSHOT_SUFFIX}
 
 validate_manifest: check
