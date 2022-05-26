@@ -36,7 +36,10 @@ def main() -> None:
     subparsers.add_parser(
         'create_mirrors', help='fCreate new mirrors from the configuration provided'
     )
-    subparsers.add_parser('update_mirrors', help='Update mirrors specified in the manifest')
+    update_parser = subparsers.add_parser('update_mirrors', help='Update mirrors specified in the manifest')
+    update_parser.add_argument(
+        '--update-mirrors', help='Specify mirrors to be updated exclusively by using "," as a delimiter'
+    )
     snapshot_parser = subparsers.add_parser(
         'create_mirrors_snapshots', help='Create snapshots of mirrors specified in the manifest'
     )
@@ -70,7 +73,7 @@ def main() -> None:
         create_mirrors()
     elif args.action == 'update_mirrors':
         validate()
-        update_mirrors()
+        update_mirrors([m.strip() for m in args.update_mirrors.split(',')] if args.update_mirrors else [])
     elif args.action == 'create_mirrors_snapshots':
         validate()
         snapshots = create_snapshots_of_mirrors(args.snapshot_suffix)
