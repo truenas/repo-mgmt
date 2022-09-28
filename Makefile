@@ -31,7 +31,7 @@ backup: check
 	. ./venv-${COMMIT_HASH}/bin/activate && mirror_mgmt backup
 
 update-mirrors-without-backup: check
-ifeq ($(UPDATE_ARGS),""))
+ifeq ($(UPDATE_ARGS),"")
 	. ./venv-${COMMIT_HASH}/bin/activate && mirror_mgmt update_mirrors
 else
 	. ./venv-${COMMIT_HASH}/bin/activate && mirror_mgmt update_mirrors --update-mirrors=${UPDATE_ARGS}
