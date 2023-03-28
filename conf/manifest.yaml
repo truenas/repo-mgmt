@@ -49,10 +49,10 @@
     "name": "debian-backports"
   - "component":
       - "main"
-    "distribution": "bullseye"
+    "distribution": "bookworm"
     "gpg_key": "-----BEGIN PGP PUBLIC KEY BLOCK-----\n\nmQENBFuapV0BCACv1RMw4VqN2yx/tQfi9Ah80XegXzew7ztt4UNkaYsr/ptywQUf\nd1OxfoEvSBcWqM64u5aTcN5m4kF+RCsjMEC6RCLia27GE6o7IJYyXpl7hBs+cfp0\nuT/B/n9MNegqpDDF3pd2NyXSusAepJJi9zXyiUMOtPk4Kyxk7zAuexWfPVzPyNpO\nUaKWpsqpCCm/N+fOEToSy5XlIX4WQQqHKv77G0RYqwEsJMDf5cKItGZOX7Tku2rg\n3qcu8l4KrGYQ+HyAtzhPmVvMbjJ4fYDrrk5ttk0DDS7WpK0VtBmbq0BQaMHx/+C9\nFDJCn45lH8TorIeyYOFbVasQFUKq421gw4NtABEBAAG0N0dsdXN0ZXIgUGFja2Fn\nZXIgPGdsdXN0ZXJwYWNrYWdlckBkb3dubG9hZC5nbHVzdGVyLm9yZz6JATgEEwEC\nACIFAluapV0CGwMGCwkIBwMCBhUIAgkKCwQWAgMBAh4BAheAAAoJEENgfw3C+COM\nP9IH/3AUXkvQx+ta2IfdFfMUwmeh5/+Zz6xXag0mHcbCXelkhT6GEZq+kjUdqsNC\nBi0RzjBySZnpIVfK1Z+bvM/JZu6e75XNGMpNnYP1rDgyzz1TZZVJ2yGc77yqCNun\nFQHoDJoXxUmUpHcnbkJcuqucEbfQIZubtqJKBGOfMVjz88YFH9c+DZ8RhwBsxSYm\nASxPjM3wloC6YT5cGUN6+IMQRquzMwnBzHe/XXX7Xm1dWHRDLR2ktSM7Slh7qyin\nY3lOEpJnX/uF6i3RJbifxcOr0B+94iB6Ph1fngPxKmlzzRDFRPRr/SmVEtvx5GO1\nkBrIF2T7xHzQJ50aGukh2TSuaaq5AQ0EW5qlXQEIAMG85NuO18G1gnobBt9dQsxq\nbE9nXI7dKOAmCUHQxi0XrDJU5qQzmSJ88u1X2ICzVcTG7bKGNmslv8csrxwT9x+Z\nPa5KMtAlf8TIWCpqWqeNwW7+3PElwAhTQbxPoNmcS18q2LworTM25hOiOpOoF7ee\nQuuTBYwtbt8AfqNEjODrvo5wWlmOo3Wf22RwCbw0WzvZsBoWvB1xmJiugj8+oy20\nhDunwEUQLaKW1xWTVoWlgiAtNi1rRnRe7NtYGEohe8UQwFPmcK/KhYVsgQNeIhuX\nsh5+JAdEphbEnP0jr4zyECRwyHq8TUAiowcE44pcjOklCXL1U9MBbBLrs9BUSccA\nEQEAAYkBHwQYAQIACQUCW5qlXQIbDAAKCRBDYH8NwvgjjIV8B/wP1HRz6wY4TZTi\n4DuivybF3O9xGzSGF24RnTni3O4J9fbdJYaBjCWyz2wcZWYGbZl1k8iI7Kl7nCy9\nfQ0EPq6Cr1NKqAFGJK8UqALhoyRfDYFoh/YRE1CWPoaIRt5NLByxeFIaeIatp0mq\nST3OVzdblL/4XakBlX3TeIY8zAEx49S93LplZJO7r0YGK8NXZK6r7PRyxZuquNMa\nOaNX43XHfPP8mVA3T+pLBsB9ueRW06yIARGOewoN0D1JYv7yVDlN451iKp8oyB+B\ni7qv86C1wEg7J0S9WaJcAECPencos8YDwcHJomBKgsgCIT3vtJfrVdyu/55Hvpy8\nBu5o9YhQ\n=EkmO\n-----END PGP PUBLIC KEY BLOCK-----\n"
     "name": "gluster"
-    "url": "https://download.gluster.org/pub/gluster/glusterfs/LATEST/Debian/bullseye/amd64/apt/"
+    "url": "https://download.gluster.org/pub/gluster/glusterfs/LATEST/Debian/bookworm/amd64/apt/"
   - "component":
       - "main"
     "distribution": "all"
