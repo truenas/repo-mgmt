@@ -1,7 +1,7 @@
 ---
 "gpg_key": "20998A97"
-"publish_prefix_default": "bluefin/nightlies"
-"release": "bluefin"
+"publish_prefix_default": "cobia/nightlies"
+"release": "cobia"
 "aptly_dataset": "z/srv"
 "mirrors":
   - "component":
