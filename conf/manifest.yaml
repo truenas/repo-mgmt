@@ -1,5 +1,6 @@
 ---
 "gpg_key": "20998A97"
+"debian_release": "bookworm"
 "publish_prefix_default": "cobia/nightlies"
 "release": "cobia"
 "aptly_dataset": "z/srv"
