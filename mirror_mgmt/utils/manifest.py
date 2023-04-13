@@ -12,6 +12,7 @@ MANIFEST_SCHEMA = {
     'properties': {
         'release': {'type': 'string'},
         'gpg_key': {'type': 'string'},
+        'debian_release': {'type': 'string'},
         'aptly_dataset': {'type': 'string'},
         'publish_prefix_default': {'type': 'string'},
         'mirrors': {
@@ -44,6 +45,7 @@ MANIFEST_SCHEMA = {
         'publish_prefix_default',
         'mirrors',
         'aptly_dataset',
+        'debian_release',
     ],
 }
 

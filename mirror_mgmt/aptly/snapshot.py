@@ -46,7 +46,7 @@ class Snapshot(Resource):
 
     @property
     def snap_distribution(self) -> str:
-        return 'bullseye' if self.distribution == '/' else self.distribution
+        return get_manifest()['debian_release'] if self.distribution == '/' else self.distribution
 
     def publish(self, gpg_key: str) -> None:
         if not self.distribution:
