@@ -1,0 +1,4 @@
+build/*
+dist/*
+mirror_mgmt.egg-info/*
+venv*
