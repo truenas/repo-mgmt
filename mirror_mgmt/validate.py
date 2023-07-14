@@ -9,7 +9,7 @@ from .utils.manifest import get_manifest
 logger = logging.getLogger(__name__)
 
 WANTED_PACKAGES = {
-    'gpg1',
+    'gpg',
     'aptly',
     'git',
     'zfs',
