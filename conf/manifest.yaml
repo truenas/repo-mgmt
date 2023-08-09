@@ -2,7 +2,7 @@
 "gpg_key": "20998A97"
 "publish_prefix_default": "bluefin/nightlies"
 "release": "bluefin"
-"aptly_dataset": "z/srv"
+"aptly_dataset": "data/srv"
 "mirrors":
   - "component":
       - "main"
