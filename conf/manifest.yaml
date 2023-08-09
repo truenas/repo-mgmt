@@ -3,7 +3,7 @@
 "debian_release": "bookworm"
 "publish_prefix_default": "cobia/nightlies"
 "release": "cobia"
-"aptly_dataset": "z/srv"
+"aptly_dataset": "data/srv"
 "mirrors":
   - "name": "pcm"
     "url": "http://download.opensuse.org/repositories/home:/opcm/Debian_Testing/"
