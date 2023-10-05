@@ -1,7 +1,7 @@
 ---
 "gpg_key": "20998A97"
 "debian_release": "bookworm"
-"publish_prefix_default": "cobia/23.10.0"
+"publish_prefix_default": "cobia/nightlies"
 "release": "cobia"
 "aptly_dataset": "data/srv"
 "mirrors":
