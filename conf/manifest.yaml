@@ -1,7 +1,7 @@
 ---
 "gpg_key": "20998A97"
 "debian_release": "bookworm"
-"publish_prefix_default": "dragonfish/nightlies"
+"publish_prefix_default": "dragonfish/24.04-BETA.1"
 "release": "dragonfish"
 "aptly_dataset": "data/srv"
 "mirrors":
