@@ -5,11 +5,6 @@
 "release": "electriceel"
 "aptly_dataset": "data/srv"
 "mirrors":
-  - "name": "pcm"
-    "url": "http://download.opensuse.org/repositories/home:/opcm/Debian_Testing/"
-    "component": []
-    "distribution": "/"
-    "gpg_key": "-----BEGIN PGP PUBLIC KEY BLOCK-----\nVersion: GnuPG v1.4.5 (GNU/Linux)\n\nmQENBF2pfC0BCADDl0PjvmRNY3dvd1K8oLE+2OUUqn+rEuZk6n3ukLwo5i5pTlxp\n7da2n13VGgSuD8WMViuz7B0qyWX2HXbbm+jduFNWzXm+4nj51RT6hvdGu6IJqNJo\n6QZcVL32F3OjN5owpeZhZR6J52BIVRpEfn9av+jv32bpzO5QZ+C/33m9IzPJ8Q/t\nIKMqrjmIJDgawSgZJutQ/mZchQFNDVr/lB70t8GMXFr7M6VyTrah7qplfvJtxZ83\nkkQbrAjRRVAt7BKiUEyyqzN5Qj3PnDcFw7kvA2/fjuGDfqnDKTFLMpuM3S2Vtwx6\n3t/OrEn+lmlNK7xJrUwRtycf8QNxiFLae1IjABEBAAG0NGhvbWU6b3BjbSBPQlMg\nUHJvamVjdCA8aG9tZTpvcGNtQGJ1aWxkLm9wZW5zdXNlLm9yZz6JAT4EEwEIACgF\nAmG6OqcCGwMFCQgvbnoGCwkIBwMCBhUIAgkKCwQWAgMBAh4BAheAAAoJEA4m72yU\nzZjRabAH/Ap9OldWYvSRJEpmJg53o5mduHaEOYBrndk5p+RexrwtCdGrkNfYaLrb\nLipuY7GgaulDldbzGBhlCAUourzb25yPvl2ukLIftpLy0/bTohLO5OoiokqFFa8p\nrmnCEn61p4xi1QOxGAaP2r/N5YdST0KgAf5QQ2mOyyk3l9xRaBC0YJz3m9BPAxPt\nkf40bL1ZjvPTj7c6JrPneNsdrtaZl1QXH4YEK8NErFn+cahkCjdAW2Yti873H0+2\nlpXsMerzqODHCm/Xy1Q1fkdlyJ1QapTkFxDFwNb4JjDlUGI3F9UwNNj71arWjZfE\nk+1Y6VSkyNKCzR2OdtppTvuPyFh0y5eIRgQTEQIABgUCXal8LQAKCRA7MBG3a51l\nI2LrAKCCuSBz/mhffa3jJXjkT3r3aXSFrwCffVQ1U6rAj5ua9GWk/cD+Jusy7PI=\n=7GXG\n-----END PGP PUBLIC KEY BLOCK-----"
   - "component":
       - "main"
     "distribution": "stable"
