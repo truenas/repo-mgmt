@@ -1,7 +1,7 @@
 ---
 "gpg_key": "20998A97"
 "debian_release": "bookworm"
-"publish_prefix_default": "electriceel/nightlies"
+"publish_prefix_default": "electriceel/24.10-RC.1"
 "release": "electriceel"
 "aptly_dataset": "data/srv"
 "mirrors":
