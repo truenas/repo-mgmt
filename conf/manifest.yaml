@@ -39,6 +39,7 @@
       - "main"
       - "contrib"
       - "non-free"
+      - "non-free-firmware"
     "distribution": "bookworm-backports"
     "url": "http://deb.debian.org/debian/"
     "name": "debian-backports"
