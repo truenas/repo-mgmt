@@ -1,7 +1,7 @@
 ---
 "gpg_key": "20998A97"
 "debian_release": "bookworm"
-"publish_prefix_default": "fangtooth/nightlies"
+"publish_prefix_default": "fangtooth/25.04-RC.1"
 "release": "fangtooth"
 "aptly_dataset": "data/srv"
 "mirrors":
