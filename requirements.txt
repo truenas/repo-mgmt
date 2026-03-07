@@ -1,6 +1,6 @@
-setuptools==54.1.2
+setuptools==79.0.1
 jsonschema==3.2.0
-PyYAML==5.4.1
+PyYAML==6.0.3
 coloredlogs==15.0
 configobj==5.0.6
-typing_extensions
+typing_extensions==4.15.0
