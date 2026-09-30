@@ -1,7 +1,7 @@
 ---
 "gpg_key": "20998A97"
 "debian_release": "trixie"
-"publish_prefix_default": "halfmoon/nightlies"
+"publish_prefix_default": "27/27.0.0-RC.1"
 "release": "halfmoon"
 "aptly_dataset": "data/srv"
 "mirrors":
